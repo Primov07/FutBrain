@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="img/logo.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Регистрация – FutBrain</title>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <a id="home" href="home.html"><img id="logo" src="img/logo.png" alt="FutBrain лого"></a> 
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="posts.html">Публикации</a></li>
+                    <li><a href="game.html">Игра</a></li>
+                    <li><a href="store.html">Магазин</a></li>
+                    <li><a href="rankings.html">Класации</a></li>
+                    <li><a href="contacts.html">Контакти</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn-login">Вход</a>
+                <a href="register.html" class="btn-register active">Регистрация</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="auth-container">
+            <h2>Създай профил</h2>
+            <p>Стани част от нашата футболна общност още днес.</p>
+            
+            <form class="contact-form" action="/users/register" method="POST">
+                <div class="form-group">
+                    <label for="reg-username">Потребителско име</label>
+                    <input type="text" id="reg-username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Имейл адрес</label>
+                    <input type="email" id="reg-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Парола</label>
+                    <input type="password" id="reg-password" name="password" required>
+                </div>
+            <!-- <div class="form-group">
+                    <label for="confirm-password">Потвърди паролата</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                </div> -->
+                <button type="submit" class="btn-submit" style="width: 100%;">Регистрация</button>
+            </form> 
+            
+            <div class="auth-footer">
+                Вече имаш профил? <a href="login.html">Влез оттук</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="img/logo.png" alt="FutBrain лого">
+                <p>Твоята футболна общност.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Бързи връзки</h4>
+                <ul>
+                    <li><a href="home.html">Начало</a></li>
+                    <li><a href="posts.html">Публикации</a></li>
+                    <li><a href="game.html">Игра</a></li>
+                    <li><a href="rankings.html">Класации</a></li>
+                </ul>
+            </div>
+            <div class="footer-about">
+                <h4>За нас</h4>
+                <p>Обсъждай любимите си отбори и играчи и участвай в седмичните ни игри за награди.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 FutBrain. Всички права запазени.</p>
+        </div>
+    </footer>
+</body>
+</html>

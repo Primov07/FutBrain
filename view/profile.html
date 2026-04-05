@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="img/logo.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Моят профил – FutBrain</title>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <a id="home" href="home.html"><img id="logo" src="img/logo.png" alt="FutBrain лого"></a> 
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="posts.html">Публикации</a></li>
+                    <li><a href="game.html">Игра</a></li>
+                    <li><a href="store.html">Магазин</a></li>
+                    <li><a href="rankings.html">Класации</a></li>
+                    <li><a href="contacts.html">Контакти</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <div class="user-balance" style="margin-right: 20px; color: var(--primary-blue); font-weight: bold;">
+                    <i class="fas fa-coins" style="color: gold;"></i> 1,250 FC
+                </div>
+                <a href="profile.html" class="btn-login active">Профил</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="profile-grid">
+            <!-- Информация за профила -->
+            <aside class="profile-card">
+                <img src="img/logo.png" alt="Аватар" class="profile-avatar">
+                <h2>SoccerFan99</h2>
+                <p style="color: var(--text-light); margin-bottom: 20px;">Експерт по тактика</p>
+                
+                <button class="btn-buy" style="margin-bottom: 10px;">Редактирай профила</button>
+                <button class="btn-login" style="width: 100%; border-color: #e74c3c; color: #e74c3c;">Изход</button>
+
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span>1,250</span>
+                        <label>FutCoins</label>
+                    </div>
+                    <div class="stat-item">
+                        <span>24</span>
+                        <label>Поста</label>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Активност -->
+            <section class="activity-container">
+                <div class="section-header" style="border: none;">
+                    <h2>Моите публикации</h2>
+                </div>
+                
+                <div class="posts-grid" style="grid-template-columns: 1fr;">
+                    <article class="post-card">
+                        <div class="post-header">
+                            <img src="img/logo.png" alt="Потребител" class="user-avatar">
+                            <span class="user-name">SoccerFan99</span>
+                            <span class="post-date">преди 2 часа</span>
+                        </div>
+                        <div class="post-body">
+                            <h3>Кой ще спечели Златната обувка този сезон?</h3>
+                            <p>С преминаването на Мбапе в Реал Мадрид състезанието за Златната обувка в Ла Лига ще бъде оспорвано...</p>
+                        </div>
+                        <div class="post-footer">
+                            <span><i class="far fa-thumbs-up"></i> 124 харесвания</span>
+                            <span><i class="far fa-comment"></i> 45 коментара</span>
+                        </div>
+                    </article>
+                    
+                    <!-- Могат да се добавят още постове тук -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="img/logo.png" alt="FutBrain лого">
+                <p>Твоята футболна общност.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Бързи връзки</h4>
+                <ul>
+                    <li><a href="home.html">Начало</a></li>
+                    <li><a href="posts.html">Публикации</a></li>
+                    <li><a href="game.html">Игра</a></li>
+                    <li><a href="rankings.html">Класации</a></li>
+                </ul>
+            </div>
+            <div class="footer-about">
+                <h4>За нас</h4>
+                <p>Обсъждай любимите си отбори и играчи и участвай в седмичните ни игри за награди.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 FutBrain. Всички права запазени.</p>
+        </div>
+    </footer>
+</body>
+</html>
