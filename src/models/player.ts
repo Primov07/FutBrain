@@ -1,12 +1,13 @@
 import { getModelForClass, prop, type Ref, pre } from "@typegoose/typegoose";
 import type { User } from "./user";
-import { Types } from "mongoose";
+import { playersUrl, clubsUrl } from "../app";
 
 @pre<Player>("save", async function () {
 	if (this.isModified("club")) {
-		this.clubImg = `/clubs/${this.club}.png`;
-		this.id = this._id.toString();
+		this.clubImg = `${clubsUrl}/${this.club}.png`;
 	}
+	this.id = this._id.toString();
+	this.playerImg= `${playersUrl}/${this.name}.webp`
 })
 export class Player {
 	/*@prop({
@@ -58,9 +59,9 @@ export class Player {
 	@prop({
 		default: [],
 		ref: "User",
-		type: Types.ObjectId,
+		type: String,
 	})
-	public users!: Ref<User, Types.ObjectId>[];
+	public users!: Ref<User, string>[];
 }
 const PlayerModel = getModelForClass(Player);
 export default PlayerModel;

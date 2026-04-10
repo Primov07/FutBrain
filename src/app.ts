@@ -21,15 +21,19 @@ export const app: express.Application = express();
 
 const PORT: number = parseInt(process.env.PORT!);
 const BASE_URL: string = `http://localhost:${PORT}`;
-const clubsUrl = `${BASE_URL}/clubs`;
+export const clubsUrl: string = `${BASE_URL}/clubs`;
+export const playersUrl : string = `${BASE_URL}/players`
+
+const viteUrl: string = process.env.VITE_FRONTEND_URL!;
 
 app.use(cors({
-	origin: "http://localhost:5173",
+	origin: viteUrl,
 	credentials: true
 }));
 
 app.use(express.static(path.resolve(__dirname, "../../view")));
 app.use("/clubs", express.static(path.join(__dirname, "../uploads/clubs")));
+app.use("/players", express.static(path.join(__dirname, "../uploads/players")));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

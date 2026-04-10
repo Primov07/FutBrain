@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface Club {
 	name: string;
@@ -11,9 +12,22 @@ const BASE_URL: string = import.meta.env.VITE_API_URL.toString();
 const AdminPlayerAdd: React.FC = () => {
 	const url: string = `${BASE_URL}/clubs`;
 	const [clubs, setClubs] = React.useState<Club[]>([]);
-  const [selectedClub, setSelectedClub] = React.useState<Club | null>(null);
-  const [playerName, setPlayerName] = React.useState<string>("");
-  const [image, setImage] = React.useState<File | null>(null);
+	const [selectedClub, setSelectedClub] = React.useState<Club | null>(null);
+	const [playerName, setPlayerName] = React.useState<string>("");
+	const [image, setImage] = React.useState<File | null>(null);
+	const [imagePreview, setImagePreview] = React.useState<string | null>(null);
+
+	React.useEffect(() => {
+		if (!image) {
+			setImagePreview(null);
+			return;
+		}
+
+		const objectUrl = URL.createObjectURL(image);
+		setImagePreview(objectUrl);
+
+		return () => URL.revokeObjectURL(objectUrl);
+	}, [image]);
 
 	React.useEffect(() => {
 		fetch(url)
@@ -26,24 +40,27 @@ const AdminPlayerAdd: React.FC = () => {
 	}, []);
 
 	const handleClubChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const clubName : string = event.target.value;
-    const club: Club | null = clubs.find((c) => c.name === clubName) || null;
+		const clubName: string = event.target.value;
+		const club: Club | null = clubs.find((c) => c.name === clubName) || null;
 		setSelectedClub(club);
-  };
+	};
 
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
+	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+		e.preventDefault();
 
-    const formData: FormData = new FormData(e.currentTarget);
-    const clubName = selectedClub!.name;
-    
-    const response = await fetch(`${BASE_URL}/players/`, {
-      method: "POST",
-      body: formData
-    })
+		const formData: FormData = new FormData(e.currentTarget);
 
-    response.json();
-  };
+		try {
+			const res = await fetch(`${BASE_URL}/players/`, {
+				method: "POST",
+				body: formData,
+			});
+			if (!res.ok) throw new Error();
+			toast.success("Играчът е успешно създаден.");
+		} catch (err) {
+			toast.error("Грешка при създаването на играча.");
+		}
+	};
 
 	return (
 		<>
@@ -54,17 +71,17 @@ const AdminPlayerAdd: React.FC = () => {
 			<div className="admin-form-container">
 				<form
 					className="admin-form"
-          id="player-form"
-          onSubmit={handleSubmit}
+					id="player-form"
+					onSubmit={handleSubmit}
 				>
 					<div className="form-group">
 						<label htmlFor="player-name">Име на играча</label>
 						<input
 							type="text"
-              id="player-name"
-              name="playerName"
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
+							id="player-name"
+							name="playerName"
+							value={playerName}
+							onChange={(e) => setPlayerName(e.target.value)}
 							placeholder="Въведете име..."
 							required
 						/>
@@ -75,9 +92,8 @@ const AdminPlayerAdd: React.FC = () => {
 						<select
 							id="player-club"
 							required
-              defaultValue=""
-              name="club"
-              value={selectedClub?.name}
+							defaultValue=""
+							name="club"
 							onChange={handleClubChange}
 						>
 							<option
@@ -123,11 +139,26 @@ const AdminPlayerAdd: React.FC = () => {
 							</button>
 							<input
 								type="file"
-                id="player-img"
-                name="playerImg"
-                accept="image/*"
-                onChange={(e) => setImage(e.target.files?.[0] || null)}
+								id="player-img"
+								name="playerImg"
+								accept="image/*"
+								onChange={(e) => setImage(e.target.files?.[0] || null)}
 							/>
+						</div>
+					</div>
+
+					<div className="form-group player-preview-container">
+						<label>Снимка на избрания играч</label>
+						<div
+							className="club-logo-display"
+							id="player-image-preview"
+						>
+							{imagePreview ?
+								<img
+									src={imagePreview}
+									alt="Преглед на снимката"
+								/>
+							:	<p>Няма избрана снимка</p>}
 						</div>
 					</div>
 

@@ -1,12 +1,12 @@
 import { Types } from "mongoose";
 
 export interface PlayerDTO {
-	id: Types.ObjectId;
+	id: string;
 	name: string;
 	club: string;
 	clubImg: string;
 	playerImg: string;
-	users: Types.ObjectId[];
+	users: string[];
 }
 
 export interface CreatePlayerDTO {
