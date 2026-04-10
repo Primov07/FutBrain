@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { PlayerService } from ".";
 import { Player } from ".";
+import { CreatePlayerDTO } from "../dtos/player";
 
 class PlayerController {
 	constructor(private readonly playerService: PlayerService) {}
@@ -21,8 +22,8 @@ class PlayerController {
 	}
 
 	public async create(req: Request, res: Response) {
-		const player: Player = req.body;
-		await this.playerService.create(player);
+		const playerDTO: CreatePlayerDTO = {name: req.body.playerName, club: req.body.club};
+		await this.playerService.create(playerDTO);
 		res.status(201).json({ message: "Player created successfully" });
 	}
 
@@ -38,7 +39,7 @@ class PlayerController {
 
 	public async update(req: Request, res: Response) {
 		try {
-			const player: Player = req.body;
+			const player = req.body.playerImg;
 			await this.playerService.update(player);
 			res.json({ message: "Player updated successfully" });
 		} catch (error) {

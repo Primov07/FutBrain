@@ -1,5 +1,6 @@
 import { PlayerRepository } from ".";
 import { Player } from ".";
+import { CreatePlayerDTO } from "../dtos/player";
 
 export default class PlayerService {
 	private playerRepository: PlayerRepository;
@@ -15,8 +16,11 @@ export default class PlayerService {
 		return await this.playerRepository.getById(id);
 	}
 
-	public async create(player: Player) {
-		await this.playerRepository.create(player);
+	public async create(player: CreatePlayerDTO) {
+		const newPlayer: Player = new Player();
+		newPlayer.name = player.name;
+		newPlayer.club = player.club;
+		await this.playerRepository.create(newPlayer);
 	}
 
 	public async deleteById(id: string) {

@@ -1,10 +1,21 @@
-import { getModelForClass, prop, type Ref } from "@typegoose/typegoose";
+import { getModelForClass, prop, type Ref, pre } from "@typegoose/typegoose";
 import type { User } from "./user";
 import { Types } from "mongoose";
 
+@pre<Player>("save", async function () {
+	if (this.isModified("club")) {
+		this.clubImg = `/clubs/${this.club}.png`;
+		this.id = this._id.toString();
+	}
+})
 export class Player {
-	@prop()
-		public _id!: Types.ObjectId;
+	/*@prop({
+		default: new Types.ObjectId,
+	})
+	public _id!: Types.ObjectId; */
+
+	@prop({})
+	public id!: string;
 
 	@prop({
 		required: true,
@@ -29,18 +40,12 @@ export class Player {
 	public club!: string;
 
 	@prop({
-		default: "../uploads/club.png",
-		validate: {
-			validator: (v) => {
-				return v.length > 0;
-			},
-		},
-		message: "Club image cannot be empty.",
+		default: "../../uploads/club.png",
 	})
 	public clubImg!: string;
 
 	@prop({
-		default: "../uploads/player.png",
+		default: "/players/player.png",
 		validate: {
 			validator: (v) => {
 				return v.length > 0;

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UserService } from ".";
-import { UserDTO, CreateUserDTO, UpdateUserDTO } from "../../shared/user";
+import { UserDTO, CreateUserDTO, UpdateUserDTO } from "../dtos/user";
 
 class UserController {
 	constructor(private readonly userService: UserService) {}

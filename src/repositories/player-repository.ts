@@ -29,7 +29,7 @@ export default class PlayerRepository {
 	}
 
 	public async update(player: Player) {
-		const id: string = player._id.toString();
+		const id: string = player.id.toString();
 		let found = await PlayerModel.findById(new Types.ObjectId(id));
 
 		if (!found) throw new Error("Player not found.");

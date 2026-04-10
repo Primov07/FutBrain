@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../img/logo.png">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>FutBrain – Потребители</title>
+</head>
+<body class="admin-body">
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="../img/logo.png" alt="FutBrain лого">
+                <span>Админ панел</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="admin.html"><i class="fas fa-chart-line"></i> Табло</a></li>
+                    <li class="active"><a href="users.html"><i class="fas fa-users"></i> Потребители</a></li>
+                    <li><a href="posts.html"><i class="fas fa-file-alt"></i> Публикации</a></li>
+                    <li><a href="players.html"><i class="fas fa-running"></i> Играчи</a></li>
+                    <li><a href="comments.html"><i class="fas fa-comments"></i> Коментари</a></li>
+                    <li><a href="replies.html"><i class="fas fa-reply-all"></i> Отговори</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="../home.html"><i class="fas fa-sign-out-alt"></i> Към сайта</a>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Търси потребител...">
+                </div>
+                <div class="admin-profile">
+                    <span>Добре дошли, <strong>администратор</strong></span>
+                    <img src="../img/logo.png" alt="Админ" class="admin-avatar">
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <section class="data-section">
+                    <div class="section-header">
+                        <h2>Управление на потребители</h2>
+                        <div class="header-actions">
+                            <button class="btn-refresh" title="Обнови таблицата"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Аватар</th>
+                                    <th>Потребителско име</th>
+                                    <th>Имейл</th>
+                                    <th>FutCoins</th>
+                                    <th>Роля</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="../img/logo.png" alt="User" class="table-img" style="border-radius: 50%;"></td>
+                                    <td>Ivan_Ivanov</td>
+                                    <td>ivan@example.com</td>
+                                    <td>1 200</td>
+                                    <td><span class="status-active">Админ</span></td>
+                                    <td class="actions">
+                                        <button class="btn-edit" title="Редактирай"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-delete" title="Изтрий"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../img/logo.png" alt="User" class="table-img" style="border-radius: 50%;"></td>
+                                    <td>SoccerFan</td>
+                                    <td>fan@example.com</td>
+                                    <td>450</td>
+                                    <td><span class="status-active" style="background-color: #e2e8f0; color: #4a5568;">Потребител</span></td>
+                                    <td class="actions">
+                                        <button class="btn-edit" title="Редактирай"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-delete" title="Изтрий"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

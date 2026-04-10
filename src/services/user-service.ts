@@ -1,6 +1,6 @@
 import { UserRepository } from ".";
 import { User } from ".";
-import { UserDTO, CreateUserDTO, UpdateUserDTO } from "../../shared/user";
+import { UserDTO, CreateUserDTO, UpdateUserDTO } from "../dtos/user";;
 
 export default class UserService {
 	private userRepository: UserRepository;
