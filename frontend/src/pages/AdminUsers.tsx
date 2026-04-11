@@ -23,7 +23,7 @@ const AdminUsers: React.FC = () => {
           </thead>
           <tbody>
             <tr>
-              <td><img src="/img/logo.png" alt="User" className="table-img" style={{ borderRadius: '50%' }} /></td>
+              <td><img src="/img/logo.png" alt="User" className="table-img user-avatar-circle" /></td>
               <td>Ivan_Ivanov</td>
               <td>ivan@example.com</td>
               <td>1 200</td>
@@ -34,11 +34,11 @@ const AdminUsers: React.FC = () => {
               </td>
             </tr>
             <tr>
-              <td><img src="/img/logo.png" alt="User" className="table-img" style={{ borderRadius: '50%' }} /></td>
+              <td><img src="/img/logo.png" alt="User" className="table-img user-avatar-circle" /></td>
               <td>SoccerFan</td>
               <td>fan@example.com</td>
               <td>450</td>
-              <td><span className="status-active" style={{ backgroundColor: '#e2e8f0', color: '#4a5568' }}>Потребител</span></td>
+              <td><span className="status-active status-user">Потребител</span></td>
               <td className="actions">
                 <button className="btn-edit" title="Редактирай"><i className="fas fa-edit"></i></button>
                 <button className="btn-delete" title="Изтрий"><i className="fas fa-trash"></i></button>

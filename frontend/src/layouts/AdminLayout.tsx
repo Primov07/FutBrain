@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet, Link } from 'react-router-dom';
+import '../styles/admin.css';
 
 const AdminLayout: React.FC = () => {
   return (
@@ -40,6 +41,11 @@ const AdminLayout: React.FC = () => {
               <li>
                 <NavLink to="/admin/replies" className={({ isActive }) => isActive ? 'active' : ''}>
                   <i className="fas fa-reply-all"></i> Отговори
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/admin/accessories" className={({ isActive }) => isActive ? 'active' : ''}>
+                  <i className="fas fa-store"></i> Аксесоари
                 </NavLink>
               </li>
             </ul>

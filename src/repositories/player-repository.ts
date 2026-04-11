@@ -16,16 +16,18 @@ export default class PlayerRepository {
 		return player;
 	}
 
-	public async create(player: Player) {
+	public async create(player: Player) : Promise<string>{
 		const model: DocumentType<Player> = new PlayerModel(player);
 		model.save();
+		return model._id.toString();
 	}
 
-	public async deleteById(id: string) {
+	public async deleteById(id: string) : Promise<Player>{
 		const result: Player | null = await PlayerModel.findByIdAndDelete(new Types.ObjectId(id))
 			.lean()
 			.exec();
 		if (!result) throw new Error("Player does not exist.");
+		return result;
 	}
 
 	public async update(player: Player) {
@@ -33,7 +35,8 @@ export default class PlayerRepository {
 		let found = await PlayerModel.findById(new Types.ObjectId(id));
 
 		if (!found) throw new Error("Player not found.");
-		found = new PlayerModel(player);
+		found.name = player.name;
+		found.club = player.club;
 		await found.save();
 	}
 }

@@ -5,7 +5,7 @@ const AdminDashboard: React.FC = () => {
   return (
     <>
       <h1>Общ преглед на системата</h1>
-      <p style={{ marginBottom: '25px', color: 'var(--text-light)' }}>
+      <p className="admin-welcome-text">
         Добре дошли в административния панел на FutBrain. Тук можете да управлявате всички аспекти на платформата.
       </p>
 
@@ -46,8 +46,8 @@ const AdminDashboard: React.FC = () => {
           <h2>Бързи връзки</h2>
         </div>
         <div className="stats-grid">
-          <Link to="/admin/players/add" className="stat-card" style={{ textDecoration: 'none', color: 'inherit' }}>
-            <div className="stat-icon" style={{ backgroundColor: 'rgba(69, 123, 157, 0.1)', color: 'var(--primary-blue)' }}>
+          <Link to="/admin/players/add" className="stat-card stat-link">
+            <div className="stat-icon stat-icon-bg">
               <i className="fas fa-user-plus"></i>
             </div>
             <div className="stat-info">
@@ -55,8 +55,8 @@ const AdminDashboard: React.FC = () => {
               <p>Създаване на нов профил</p>
             </div>
           </Link>
-          <Link to="/admin/posts" className="stat-card" style={{ textDecoration: 'none', color: 'inherit' }}>
-            <div className="stat-icon" style={{ backgroundColor: 'rgba(69, 123, 157, 0.1)', color: 'var(--primary-blue)' }}>
+          <Link to="/admin/posts" className="stat-card stat-link">
+            <div className="stat-icon stat-icon-bg">
               <i className="fas fa-edit"></i>
             </div>
             <div className="stat-info">

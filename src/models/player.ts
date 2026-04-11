@@ -7,7 +7,7 @@ import { playersUrl, clubsUrl } from "../app";
 		this.clubImg = `${clubsUrl}/${this.club}.png`;
 	}
 	this.id = this._id.toString();
-	this.playerImg= `${playersUrl}/${this.name}.webp`
+	this.playerImg= `${playersUrl}/${this.id}.webp`
 })
 export class Player {
 	/*@prop({

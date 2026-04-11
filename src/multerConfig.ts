@@ -7,9 +7,8 @@ const playerStorage: multer.StorageEngine = multer.diskStorage({
 	},
     filename: (req, file, cb) => {
 		const extName = path.extname(file.originalname);
-		if (extName != ".webp") throw new Error("Снимките трябва да бъдат в .webp формат!");
-		const name = req.body.playerName;
-		cb(null, name + extName);
+		if (extName != ".webp") return cb(new Error("Снимките трябва да бъдат в .webp формат!"), "");
+		cb(null, Date.now() + extName);
 	},
 });
 

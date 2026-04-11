@@ -1,3 +1,4 @@
+import { StringLengthExpectedError } from "@typegoose/typegoose/lib/internal/errors";
 import { Types } from "mongoose";
 
 export interface PlayerDTO {
@@ -10,6 +11,12 @@ export interface PlayerDTO {
 }
 
 export interface CreatePlayerDTO {
+	name: string;
+	club: string;
+}
+
+export interface UpdatePlayerDTO{
+	id: string;
 	name: string;
 	club: string;
 }

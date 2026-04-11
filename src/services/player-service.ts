@@ -1,6 +1,6 @@
 import { PlayerRepository } from ".";
 import { Player } from ".";
-import { CreatePlayerDTO, PlayerDTO } from "../dtos/player";
+import { CreatePlayerDTO, PlayerDTO, UpdatePlayerDTO } from "../dtos/player";
 
 export default class PlayerService {
 	private playerRepository: PlayerRepository;
@@ -22,23 +22,24 @@ export default class PlayerService {
 		return null;
 	}
 
-	public async create(player: CreatePlayerDTO) {
+	public async create(player: CreatePlayerDTO) : Promise<string>{
 		const newPlayer: Player = new Player();
 		newPlayer.name = player.name;
 		newPlayer.club = player.club;
-		await this.playerRepository.create(newPlayer);
+		return await this.playerRepository.create(newPlayer);
 	}
 
-	public async deleteById(id: string) {
-		await this.playerRepository.deleteById(id);
+	public async deleteById(id: string): Promise<PlayerDTO>{
+		const player: Player = await this.playerRepository.deleteById(id);
+		return this.toPlayerDTO(player);
 	}
 
-	public async update(player: PlayerDTO) {
+	public async update(player: UpdatePlayerDTO) {
 		const update: Player = new Player();
 		update.id = player.id;
 		update.name = player.name;
 		update.club = player.club;
-		await this.playerRepository.update(player);
+		await this.playerRepository.update(update);
 	}
 
 	public toPlayerDTO(player: Player) : PlayerDTO {
