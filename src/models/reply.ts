@@ -38,10 +38,11 @@ export class Reply {
 	public publishDate!: Date;
 
 	@prop({
-		default: 0,
+		default: [],
+		ref: "User",
+		type: String,
 	})
-	public likeCount!: number;
+	public likedBy?: Ref<User, string>[];
 }
 
-const ReplyModel = getModelForClass(Reply);
-export default ReplyModel;
+export const ReplyModel = getModelForClass(Reply);

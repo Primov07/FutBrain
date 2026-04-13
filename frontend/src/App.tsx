@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminLayout from './layouts/AdminLayout';
 import UserLayout from './layouts/UserLayout';
+import Home from './pages/Home';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminPlayerAdd from './pages/AdminPlayerAdd';
 import AdminUsers from './pages/AdminUsers';
@@ -10,20 +11,26 @@ import AdminPlayerUpdate from './pages/AdminPlayerUpdate';
 import AdminComments from './pages/AdminComments';
 import AdminReplies from './pages/AdminReplies';
 import AdminAccessories from './pages/AdminAccessories';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Game from './pages/Game';
+import Posts from './pages/Posts';
+import Store from './pages/Store';
+import Rankings from './pages/Rankings';
+import Contacts from './pages/Contacts';
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<UserLayout />}>
-        <Route index element={
-          <div className="hero">
-            <div className="hero-content">
-              <h1>FutBrain Начало</h1>
-              <p>Добре дошли в нашия футболен свят!</p>
-              <a href="/admin" className="btn-register">Към Админ панела</a>
-            </div>
-          </div>
-        } />
+        <Route index element={<Home />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="game" element={<Game />} />
+        <Route path="posts" element={<Posts />} />
+        <Route path="store" element={<Store />} />
+        <Route path="rankings" element={<Rankings />} />
+        <Route path="contacts" element={<Contacts />} />
       </Route>
 
       <Route path="/admin" element={<AdminLayout />}>

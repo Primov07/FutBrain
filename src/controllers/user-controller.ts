@@ -1,22 +1,29 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { UserService } from ".";
 import { UserDTO, CreateUserDTO, UpdateUserDTO } from "../dtos/user";
+import { AppError } from "../middlewares/error-handler";
+import jwt from "jsonwebtoken";
 
 class UserController {
 	constructor(private readonly userService: UserService) {}
 
-	public async getAll(req: Request, res: Response) {
-		const users: Array<UserDTO> | null = await this.userService.getAll();
-		res.json(users);
+	public async getAll(req: Request, res: Response, next: NextFunction) {
+		try {
+			const users: Array<UserDTO> | null = await this.userService.getAll();
+			if (!users) throw new AppError("Няма налични потребители", 404);
+			res.json(users);
+		} catch (error) {
+			next(error);
+		}
 	}
 
-	public async getById(req: Request, res: Response) {
+	public async getById(req: Request, res: Response, next: NextFunction) {
 		try {
 			const id: string = req.params.id!.toString();
 			const user: UserDTO | null = await this.userService.getById(id);
 			res.json(user);
 		} catch (error) {
-			res.status(404).json({ message: (error as Error).message });
+			next(error);
 		}
 	}
 
@@ -26,46 +33,69 @@ class UserController {
 		res.status(201).json({ message: "User created successfully" });
 	}
 
-	public async deleteById(req: Request, res: Response) {
+	public async deleteById(req: Request, res: Response, next: NextFunction) {
 		try {
 			const id: string = req.params.id!.toString();
 			await this.userService.deleteById(id);
 			res.json({ message: "User deleted successfully" });
 		} catch (error) {
-			res.status(404).json({ message: (error as Error).message });
+			next(error);
 		}
 	}
 
-	public async update(req: Request, res: Response) {
+	public async update(req: Request, res: Response, next: NextFunction) {
 		try {
 			const user: UpdateUserDTO = req.body;
 			await this.userService.update(user);
 			res.json({ message: "User updated successfully" });
 		} catch (error) {
-			res.status(404).json({ message: (error as Error).message });
+			next(error);
 		}
 	}
 
-	public async authenticate(req: Request, res: Response) {
+	public async authenticate(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { username, password } = req.body;
 			const user: UserDTO | null = await this.userService.authenticate(
 				username,
 				password,
 			);
-			//res.json(user);
-			res.redirect("/login");
+
+			if (!user)
+				throw new AppError("Грешно потребителско име или парола!", 401);
+
+			const token = jwt.sign(
+				{
+					id: user.id,
+					username: user.username,
+					isAdmin: user.isAdmin,
+				},
+				process.env.SECRET_KEY!.toString(),
+				{ expiresIn: "24h" },
+			);
+
+			res.status(200).json({
+				message: "Успешен вход!",
+				token: token,
+				user: {
+					id: user.id,
+					username: user.username,
+					isAdmin: user.isAdmin,
+					pictureURL: user.pictureURL,
+				},
+			});
 		} catch (error) {
-			res.status(401).json({ message: (error as Error).message });
+			next(error);
 		}
 	}
-	public async getByUsername(req: Request, res: Response) {
+	public async getByUsername(req: Request, res: Response, next: NextFunction) {
 		try {
 			const username: string = req.params.username!.toString();
-			const user: UserDTO | null = await this.userService.getByUsername(username);
+			const user: UserDTO | null =
+				await this.userService.getByUsername(username);
 			res.json(user);
 		} catch (error) {
-			res.status(404).json({ message: (error as Error).message });
+			next(error);
 		}
 	}
 }

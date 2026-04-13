@@ -598,6 +598,99 @@ footer {
     transition: background 0.3s;
 }
 
+.btn-full {
+    width: 100%;
+}
+
+.auth-helper-links {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.auth-helper-links a {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.section-header-no-border {
+    border: none !important;
+}
+
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.mb-10 {
+    margin-bottom: 10px !important;
+}
+
+.mt-15 {
+    margin-top: 15px !important;
+}
+
+.mt-40 {
+    margin-top: 40px !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.flex-column {
+    flex-direction: column !important;
+}
+
+.text-light-green {
+    color: var(--light-green) !important;
+}
+
+.text-white {
+    color: white !important;
+}
+
+.text-primary-blue {
+    color: var(--primary-blue) !important;
+}
+
+.font-small {
+    font-size: 0.9rem !important;
+}
+
+.w-full {
+    width: 100% !important;
+}
+
+.max-w-700 {
+    max-width: 700px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.bg-none {
+    background: none !important;
+}
+
+.p-0 {
+    padding: 0 !important;
+}
+
+.item-preview-gradient {
+    background: linear-gradient(45deg, #05204D, #2ecc71) !important;
+}
+
+.info-box {
+    margin-top: 40px;
+    padding: 20px;
+    background: var(--off-white);
+    border-radius: 10px;
+}
+
+.game-rules-list {
+    color: var(--text-dark);
+    padding-left: 20px;
+    margin-top: 15px;
+}
+
 .btn-submit:hover {
     background: #27ae60;
 }

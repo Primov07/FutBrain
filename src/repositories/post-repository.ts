@@ -2,7 +2,7 @@ import { DocumentType } from "@typegoose/typegoose";
 import { PostModel, Post } from ".";
 import { Types } from "mongoose";
 
-export default class PostRepository {
+export class PostRepository {
 	public async getAll(): Promise<Array<Post> | null> {
 		const posts: Array<Post> | null = await PostModel.find()
 			.lean()
@@ -14,7 +14,6 @@ export default class PostRepository {
 		const post: Post | null = await PostModel.findById(new Types.ObjectId(id))
 			.lean()
 			.exec();
-		if (!post) throw new Error("Post does not exist.");
 		return post;
 	}
 
@@ -23,18 +22,18 @@ export default class PostRepository {
 		model.save();
 	}
 
-	public async deleteById(id: string) {
+	public async deleteById(id: string) : Promise<Post | null>{
 		const result: Post | null = await PostModel.findByIdAndDelete(new Types.ObjectId(id))
 			.lean()
 			.exec();
-		if (!result) throw new Error("Post does not exist.");
+		return result;
 	}
 
-	public async update(post: Post) {
+	public async update(post: Post) : Promise<void | null>{
 		const id: string = post._id.toString();
 		let found = await PostModel.findById(new Types.ObjectId(id));
 
-		if (!found) throw new Error("Post not found.");
+		if (!found) return null;
 		found = new PostModel(post);
 		await found.save();
 	}

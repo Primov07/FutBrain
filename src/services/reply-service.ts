@@ -1,7 +1,7 @@
 import { ReplyRepository } from ".";
 import { Reply } from ".";
 
-export default class ReplyService {
+export class ReplyService {
 	private replyRepository: ReplyRepository;
 	constructor() {
 		this.replyRepository = new ReplyRepository();

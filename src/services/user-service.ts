@@ -2,7 +2,7 @@ import { UserRepository } from ".";
 import { User } from ".";
 import { UserDTO, CreateUserDTO, UpdateUserDTO } from "../dtos/user";;
 
-export default class UserService {
+export class UserService {
 	private userRepository: UserRepository;
 	constructor() {
 		this.userRepository = new UserRepository();
@@ -38,7 +38,7 @@ export default class UserService {
 		return this.toUserDTO(result);
 	}
 
-	public async update(user: UpdateUserDTO): Promise<UserDTO | null> {
+	public async update(user: UpdateUserDTO): Promise<void | null> {
 		const newUser: User = new User();
 		newUser._id = user.id;
 		newUser.username = user.username!;
@@ -46,9 +46,8 @@ export default class UserService {
 		newUser.email = user.email!;
 		newUser.pictureURL = user.pictureURL;
 
-		const result: User | null = await this.userRepository.update(newUser);
-		if (!result) return null;
-		return this.toUserDTO(result);
+		const result: void | null = await this.userRepository.update(newUser);
+		return result;
 	}
 
 	public async authenticate(username: string, password: string): Promise<UserDTO | null> {

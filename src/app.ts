@@ -10,7 +10,8 @@ import { replyRouter } from "./routes/reply-routes";
 import path from "path";
 import fs from "fs";
 import cors from "cors";
-import { playerUpload } from "./multerConfig";
+import { playerUpload } from "./middlewares/multerConfig";
+import { errorHandler } from "./middlewares/error-handler";
 
 dotenv.config();
 
@@ -22,14 +23,16 @@ export const app: express.Application = express();
 const PORT: number = parseInt(process.env.PORT!);
 const BASE_URL: string = `http://localhost:${PORT}`;
 export const clubsUrl: string = `${BASE_URL}/clubs`;
-export const playersUrl : string = `${BASE_URL}/players`
+export const playersUrl: string = `${BASE_URL}/players`;
 
 const viteUrl: string = process.env.VITE_FRONTEND_URL!;
 
-app.use(cors({
-	origin: viteUrl,
-	credentials: true
-}));
+app.use(
+	cors({
+		origin: viteUrl,
+		credentials: true,
+	}),
+);
 
 app.use(express.static(path.resolve(__dirname, "../../view")));
 app.use("/clubs", express.static(path.join(__dirname, "../uploads/clubs")));
@@ -80,6 +83,8 @@ app.get("/clubs", (req: express.Request, res: express.Response) => {
 		res.json(clubImages);
 	});
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}!`);

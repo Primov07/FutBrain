@@ -1,7 +1,6 @@
 import { getModelForClass, prop, type Ref } from "@typegoose/typegoose";
 import type { Post } from "./post";
 import type { User } from "./user";
-import { randomUUID } from "crypto";
 import { Types } from "mongoose";
 
 export class Comment {
@@ -39,15 +38,10 @@ export class Comment {
 	public publishDate!: Date;
 
 	@prop({
-		default: 0,
-		validate: {
-			validator: (v) => {
-				return v > 0;
-			},
-		},
-		message: "Likes should be positive integer!",
+		default: [],
+		ref: "User",
+		type: String
 	})
-	public likeCount!: number;
+	public likedBy?: Ref<User, string>[];
 }
-const CommentModel = getModelForClass(Comment);
-export default CommentModel;
+export const CommentModel = getModelForClass(Comment);

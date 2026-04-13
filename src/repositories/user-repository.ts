@@ -1,7 +1,7 @@
 import { UserModel, User } from ".";
 import { DocumentType } from "@typegoose/typegoose";
 
-export default class UserRepository {
+export class UserRepository {
 	public async getAll(): Promise<Array<User> | null> {
 		const users: Array<User> | null = await UserModel.find().lean().exec();
 		return users;
@@ -9,7 +9,6 @@ export default class UserRepository {
 
 	public async getById(id: string): Promise<User | null> {
 		const user: User | null = await UserModel.findById(id).lean().exec();
-		if (!user) return null;
 		return user;
 	}
 
@@ -17,7 +16,6 @@ export default class UserRepository {
 		const user: User | null = await UserModel.findOne({ username: username })
 			.lean()
 			.exec();
-		if (!user) return null;
 		return user;
 	}
 
@@ -27,7 +25,6 @@ export default class UserRepository {
 		})
 			.lean()
 			.exec();
-		if (!result) return null;
 		return result;
 	}
 
@@ -61,17 +58,15 @@ export default class UserRepository {
 		const result: User | null = await UserModel.findByIdAndDelete(id)
 			.lean()
 			.exec();
-		if (!result) return null;
 		return result;
 	}
 
-	public async update(user: User) : Promise<User | null>{
+	public async update(user: User) : Promise<void | null>{
 		const id: string = user._id;
 		let found = await UserModel.findById(id);
 
 		if (!found) return null;
 		found = new UserModel(user);
 		await found.save();
-		return found;
 	}
 }

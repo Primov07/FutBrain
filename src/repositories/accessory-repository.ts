@@ -2,7 +2,7 @@ import { AccessoryModel , Accessory } from ".";
 import { DocumentType } from "@typegoose/typegoose";
 import {Types} from "mongoose";
 
-export default class AccessoryRepository {
+export class AccessoryRepository {
 	public async getAll(): Promise<Array<Accessory> | null> {
 		const accessories: Array<Accessory> | null = await AccessoryModel.find()
 			.lean()
@@ -14,7 +14,6 @@ export default class AccessoryRepository {
 		const accessory: Accessory | null = await AccessoryModel.findById(new Types.ObjectId(id))
 			.lean()
 			.exec();
-		if (!accessory) throw new Error("Accessory does not exist.");
 		return accessory;
 	}
 
@@ -23,18 +22,18 @@ export default class AccessoryRepository {
 		model.save();
 	}
 
-	public async deleteById(id: string) {
+	public async deleteById(id: string) : Promise<Accessory | null>{
 		const result: Accessory | null = await AccessoryModel.findByIdAndDelete(new Types.ObjectId(id))
 			.lean()
 			.exec();
-		if (!result) throw new Error("Accessory does not exist.");
+		return result;
 	}
 
-	public async update(accessory: Accessory) {
+	public async update(accessory: Accessory) : Promise<void | null>{
 		const id: string = accessory._id.toString();
 		let found = await AccessoryModel.findById(new Types.ObjectId(id));
 
-		if (!found) throw new Error("Accessory not found.");
+		if (!found) return null;
 		found = new AccessoryModel(accessory);
 		await found.save();
 	}

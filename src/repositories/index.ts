@@ -1,29 +1,14 @@
-import AccessoryRepository from "./accessory-repository";
-import CommentRepository from "./comment-repository";
-import PlayerRepository from "./player-repository";
-import PostRepository from "./post-repository";
-import ReplyRepository from "./reply-repository";
-import UserRepository from "./user-repository";
+export { AccessoryRepository } from "./accessory-repository";
+export { CommentRepository } from "./comment-repository";
+export { PlayerRepository } from "./player-repository";
+export { PostRepository } from "./post-repository";
+export { ReplyRepository } from "./reply-repository";
+export { UserRepository } from "./user-repository";
 
-import { CommentModel, Comment } from "../models";
-import { AccessoryModel, Accessory } from "../models";
-import { PlayerModel, Player } from "../models";
-import { PostModel, Post } from "../models";
-import { ReplyModel, Reply } from "../models";
-import { UserModel, User } from "../models";
+export{ CommentModel, Comment } from "../models";
+export { AccessoryModel, Accessory } from "../models";
+export { PlayerModel, Player } from "../models";
+export { PostModel, Post } from "../models";
+export { ReplyModel, Reply } from "../models";
+export { UserModel, User } from "../models";
 
-export {
-	AccessoryRepository,
-	CommentRepository,
-	PlayerRepository,
-	PostRepository,
-	ReplyRepository,
-	UserRepository
-};
-
-export { CommentModel, Comment };
-export { AccessoryModel, Accessory };
-export { PlayerModel, Player };
-export { PostModel, Post };
-export { ReplyModel, Reply };
-export { UserModel, User };

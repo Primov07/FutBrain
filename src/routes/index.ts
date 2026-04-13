@@ -1,13 +1,4 @@
-import {
-	accessoryController,
-	commentController,
-	playerController,
-	postController,
-	replyController,
-	userController,
-} from "../controllers";
-
-import {
+export {
 	AccessoryService,
 	CommentService,
 	PlayerService,
@@ -16,8 +7,6 @@ import {
 	UserService,
 } from "../services";
 
-import { app } from "../app";
-
 export {
 	accessoryController,
 	commentController,
@@ -25,18 +14,9 @@ export {
 	postController,
 	replyController,
 	userController,
-};
+} from "../controllers"
 
-export {
-	AccessoryService,
-	CommentService,
-	PlayerService,
-	PostService,
-	ReplyService,
-	UserService,
-};
-
-export { app };
+export { app } from "../app";
 
 export { accessoryRouter } from "./accessory-routes";
 export { commentRouter } from "./comment-routes";

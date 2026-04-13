@@ -1,8 +1,8 @@
 import { PlayerModel, Player } from ".";
 import { DocumentType } from "@typegoose/typegoose";
-import {Types} from "mongoose";
+import { Types } from "mongoose";
 
-export default class PlayerRepository {
+export class PlayerRepository {
 	public async getAll(): Promise<Array<Player> | null> {
 		const players: Array<Player> | null = await PlayerModel.find()
 			.lean()
@@ -12,7 +12,6 @@ export default class PlayerRepository {
 
 	public async getById(id: string): Promise<Player | null> {
 		const player: Player | null = await PlayerModel.findById(new Types.ObjectId(id)).lean().exec();
-		if (!player) throw new Error("Player does not exist.");
 		return player;
 	}
 
@@ -22,19 +21,18 @@ export default class PlayerRepository {
 		return model._id.toString();
 	}
 
-	public async deleteById(id: string) : Promise<Player>{
+	public async deleteById(id: string) : Promise<Player | null>{
 		const result: Player | null = await PlayerModel.findByIdAndDelete(new Types.ObjectId(id))
 			.lean()
 			.exec();
-		if (!result) throw new Error("Player does not exist.");
 		return result;
 	}
 
-	public async update(player: Player) {
+	public async update(player: Player) : Promise<void | null>{
 		const id: string = player.id.toString();
 		let found = await PlayerModel.findById(new Types.ObjectId(id));
 
-		if (!found) throw new Error("Player not found.");
+		if (!found) return null;
 		found.name = player.name;
 		found.club = player.club;
 		await found.save();

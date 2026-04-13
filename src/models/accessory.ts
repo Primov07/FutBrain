@@ -1,6 +1,5 @@
 import { getModelForClass, prop } from "@typegoose/typegoose";
 import { Types } from "mongoose";
-import { randomUUID } from "crypto";
 
 enum Type {
 	Ball = 1,
@@ -37,5 +36,4 @@ export class Accessory {
 	@prop({ required: true, enum: Type })
 	public type!: number;
 }
-const AccessoryModel = getModelForClass(Accessory);
-export default AccessoryModel;
+export const AccessoryModel = getModelForClass(Accessory);

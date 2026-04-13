@@ -22,9 +22,11 @@ export class Post {
 	public publishDate!: Date;
 
 	@prop({
-		default: 0,
+		default: [],
+		ref: "User",
+		type: String,
 	})
-	public likeCount!: number;
+	public likedBy?: Ref<User, string>[];
 
 	@prop({
 		default: [],
@@ -39,5 +41,4 @@ export class Post {
 	})
 	public user!: Ref<User, Types.ObjectId>;
 }
-const PostModel = getModelForClass(Post);
-export default PostModel;
+export const PostModel = getModelForClass(Post);

@@ -1,7 +1,7 @@
 import { PostRepository } from ".";
 import { Post } from ".";
 
-export default class PostService {
+export class PostService {
 	private postRepository: PostRepository;
 	constructor() {
 		this.postRepository = new PostRepository();

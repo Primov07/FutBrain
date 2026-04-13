@@ -1,37 +1,19 @@
-import { Accessory, Comment, Player, Post, Reply, User } from "../models";
+export { Accessory, Comment, Player, Post, Reply, User } from "../models";
 
-import {
+export {
 	AccessoryService,
 	CommentService,
 	PlayerService,
 	PostService,
 	ReplyService,
 	UserService,
+	VoteService
 } from "../services";
 
-import {accessoryController} from "./accessory-controller";
-import {commentController} from "./comment-controller";
-import {playerController} from "./player-controller";
-import {postController} from "./post-controller";
-import {replyController} from "./reply-controller";
-import {userController} from "./user-controller";
+export {accessoryController} from "./accessory-controller";
+export {commentController} from "./comment-controller";
+export {playerController} from "./player-controller";
+export {postController} from "./post-controller";
+export {replyController} from "./reply-controller";
+export {userController} from "./user-controller";
 
-export {
-	AccessoryService,
-	CommentService,
-	PlayerService,
-	PostService,
-	ReplyService,
-	UserService,
-};
-
-export { Accessory, Comment, Player, Post, Reply, User };
-
-export {
-	accessoryController,
-	commentController,
-	playerController,
-	postController,
-	replyController,
-	userController,
-};

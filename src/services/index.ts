@@ -1,6 +1,6 @@
-import { Accessory, Comment, Player, Post, Reply, User } from "../models";
+export { Accessory, Comment, Player, Post, Reply, User } from "../models";
 
-import {
+export {
 	AccessoryRepository,
 	CommentRepository,
 	PlayerRepository,
@@ -9,33 +9,10 @@ import {
 	UserRepository,
 } from "../repositories";
 
-import AccessoryService from "./accessory-service";
-import CommentService from "./comment-service";
-import PlayerService from "./player-service";
-import PostService from "./post-service";
-import ReplyService from "./reply-service";
-import UserService from "./user-service";
-
-export {
-	Accessory,
-	Comment,
-	Player,
-	Post,
-	Reply,
-	User,
-	AccessoryRepository,
-	CommentRepository,
-	PlayerRepository,
-	PostRepository,
-	ReplyRepository,
-	UserRepository,
-};
-
-export {
-	AccessoryService,
-	CommentService,
-	PlayerService,
-	PostService,
-	ReplyService,
-	UserService,
-};
+export { AccessoryService } from "./accessory-service";
+export { CommentService } from "./comment-service";
+export { PlayerService } from "./player-service";
+export { PostService } from "./post-service";
+export { ReplyService } from "./reply-service";
+export { UserService } from "./user-service";
+export { VoteService } from "./vote-service";

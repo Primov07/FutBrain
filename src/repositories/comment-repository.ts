@@ -2,7 +2,7 @@ import { CommentModel, Comment } from ".";
 import { DocumentType } from "@typegoose/typegoose";
 import {Types} from "mongoose";
 
-export default class CommentRepository {
+export class CommentRepository {
 	public async getAll(): Promise<Array<Comment> | null> {
 		const comments: Array<Comment> | null = await CommentModel.find()
 			.lean()
@@ -14,7 +14,6 @@ export default class CommentRepository {
 		const comment: Comment | null = await CommentModel.findById(new Types.ObjectId(id))
 			.lean()
 			.exec();
-		if (!comment) throw new Error("Comment does not exist.");
 		return comment;
 	}
 
@@ -23,18 +22,18 @@ export default class CommentRepository {
 		model.save();
 	}
 
-	public async deleteById(id: string) {
+	public async deleteById(id: string) : Promise<Comment | null>{
 		const result: Comment | null = await CommentModel.findByIdAndDelete(new Types.ObjectId(id))
 			.lean()
 			.exec();
-		if (!result) throw new Error("Comment does not exist.");
+		return result;
 	}
 
-	public async update(comment: Comment) {
+	public async update(comment: Comment) : Promise<void | null>{
 		const id: string = comment._id.toString();
 		let found = await CommentModel.findById(new Types.ObjectId(id));
 
-		if (!found) throw new Error("Comment not found.");
+		if (!found) return null;
 		found = new CommentModel(comment);
 		await found.save();
 	}

@@ -1,7 +1,7 @@
 import { AccessoryRepository } from ".";
 import { Accessory } from ".";
 
-export default class AccessoryService {
+export class AccessoryService {
 	private accessoryRepository: AccessoryRepository;
 
 	constructor() {

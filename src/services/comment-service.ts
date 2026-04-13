@@ -1,7 +1,7 @@
 import { CommentRepository } from ".";
 import { Comment } from ".";
 
-export default class CommentService {
+export class CommentService {
 	private commentRepository: CommentRepository;
 
 	constructor() {

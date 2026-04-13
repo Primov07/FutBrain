@@ -63,5 +63,4 @@ export class Player {
 	})
 	public users!: Ref<User, string>[];
 }
-const PlayerModel = getModelForClass(Player);
-export default PlayerModel;
+export const PlayerModel = getModelForClass(Player);
