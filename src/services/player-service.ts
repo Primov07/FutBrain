@@ -27,10 +27,9 @@ export class PlayerService {
 		return await this.playerRepository.create(newPlayer);
 	}
 
-	public async deleteById(id: string): Promise<PlayerDTO | null> {
-		const player: Player | null = await this.playerRepository.deleteById(id);
+	public async deleteById(id: string): Promise<void | null> {
+		const player: void | null = await this.playerRepository.deleteById(id);
 		if (!player) return null;
-		return this.toPlayerDTO(player);
 	}
 
 	public async update(player: UpdatePlayerDTO): Promise<void | null> {

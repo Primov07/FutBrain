@@ -70,20 +70,26 @@ class UserController {
 					username: user.username,
 					isAdmin: user.isAdmin,
 				},
-				process.env.SECRET_KEY!.toString(),
-				{ expiresIn: "24h" },
+				process.env.SECRET_KEY!.toString()
 			);
 
-			res.status(200).json({
-				message: "Успешен вход!",
-				token: token,
-				user: {
-					id: user.id,
-					username: user.username,
-					isAdmin: user.isAdmin,
-					pictureURL: user.pictureURL,
-				},
-			});
+			res
+				.cookie("token", jwt, {
+					httpOnly: true,
+					secure: true,
+					sameSite: "strict",
+				})
+				.status(200)
+				.json({
+					message: "Успешен вход!",
+					token: token,
+					user: {
+						id: user.id,
+						username: user.username,
+						isAdmin: user.isAdmin,
+						pictureURL: user.pictureURL,
+					},
+				});
 		} catch (error) {
 			next(error);
 		}
@@ -101,5 +107,5 @@ class UserController {
 }
 
 export const userController: UserController = new UserController(
-	new UserService(),
+	new UserService()
 );

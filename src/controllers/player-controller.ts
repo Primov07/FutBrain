@@ -54,7 +54,7 @@ class PlayerController {
 	public async deleteById(req: Request, res: Response, next: NextFunction) {
 		try {
 			const id: string = req.params.id!.toString();
-			const deleted: PlayerDTO | null = await this.playerService.deleteById(id);
+			const deleted: void | null = await this.playerService.deleteById(id);
 			if (!deleted) throw new AppError("Играчът не е намерен", 404);
 			const path: string = `uploads/players/${id}.webp`;
 			fs.unlink(path, (err) => {

@@ -53,10 +53,15 @@ const AdminPlayerAdd: React.FC = () => {
 
 		const formData: FormData = new FormData(e.currentTarget);
 
+		const object = Object.fromEntries(formData.entries());
+
 		try {
 			const res = await fetch(`${BASE_URL}/players/`, {
 				method: "POST",
-				body: formData,
+				headers: {
+					'Content-Type':'application/json'
+				},
+				body: JSON.stringify(object),
 			});
 			if (!res.ok) throw new Error();
 			toast.success("Играчът е успешно създаден.");

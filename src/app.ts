@@ -12,6 +12,7 @@ import fs from "fs";
 import cors from "cors";
 import { playerUpload } from "./middlewares/multerConfig";
 import { errorHandler } from "./middlewares/error-handler";
+import { authenticateToken } from "./middlewares/auth-middleware";
 
 dotenv.config();
 
@@ -48,18 +49,6 @@ app.use("/players", playerRouter);
 app.use("/posts", postRouter);
 app.use("/replies", replyRouter);
 
-app.get("/", (req: express.Request, res: express.Response) => {
-	res.sendFile(path.resolve(__dirname, "../../view/home.html"));
-});
-
-app.get("/admin", (req: express.Request, res: express.Response) => {
-	res.sendFile(path.resolve(__dirname, "../../view/admin/admin.html"));
-});
-
-app.get("/login", (req: express.Request, res: express.Response) => {
-	res.sendFile(path.resolve(__dirname, "../../view/login.html"));
-});
-
 app.get("/clubs", (req: express.Request, res: express.Response) => {
 	const clubsFolder = path.resolve(__dirname, "../../src/uploads/clubs");
 
@@ -83,6 +72,22 @@ app.get("/clubs", (req: express.Request, res: express.Response) => {
 		res.json(clubImages);
 	});
 });
+
+app.get(
+	"/me",
+	authenticateToken,
+	(req: express.Request, res: express.Response) => {
+		res.json((req as any).user);
+	},
+);
+app.get("/logout", (req: express.Request, res: express.Response) => {
+	res.cookie("token", "", {
+		httpOnly: true,
+		secure: true, // ако си в production
+		sameSite: "strict",
+		expires: new Date(0),
+	});
+})
 
 app.use(errorHandler);
 
