@@ -39,7 +39,7 @@ const AdminPlayerAdd: React.FC = () => {
 				console.log("Fetched clubs:", data);
 				setClubs(data);
 			})
-			.catch((err) => console.error(err));
+			.catch((err) => toast.error(err));
 	}, []);
 
 	const handleClubChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -53,20 +53,15 @@ const AdminPlayerAdd: React.FC = () => {
 
 		const formData: FormData = new FormData(e.currentTarget);
 
-		const object = Object.fromEntries(formData.entries());
-
 		try {
 			const res = await fetch(`${BASE_URL}/players/`, {
+				credentials: "include",
 				method: "POST",
-				headers: {
-					'Content-Type':'application/json'
-				},
-				body: JSON.stringify(object),
+				body: formData,
 			});
-			if (!res.ok) throw new Error();
 			toast.success("Играчът е успешно създаден.");
 		} catch (err) {
-			toast.error("Грешка при създаването на играча.");
+			toast.error((err as any).message);
 		}
 	};
 

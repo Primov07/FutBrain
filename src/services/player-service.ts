@@ -27,9 +27,9 @@ export class PlayerService {
 		return await this.playerRepository.create(newPlayer);
 	}
 
-	public async deleteById(id: string): Promise<void | null> {
-		const player: void | null = await this.playerRepository.deleteById(id);
-		if (!player) return null;
+	public async deleteById(id: string): Promise<boolean> {
+		const ifDeleted: boolean = await this.playerRepository.deleteById(id);
+		return ifDeleted;
 	}
 
 	public async update(player: UpdatePlayerDTO): Promise<void | null> {

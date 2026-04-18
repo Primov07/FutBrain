@@ -69,12 +69,13 @@ class UserController {
 					id: user.id,
 					username: user.username,
 					isAdmin: user.isAdmin,
+					pictureURL: user.pictureURL,
 				},
 				process.env.SECRET_KEY!.toString()
 			);
 
 			res
-				.cookie("token", jwt, {
+				.cookie("token", token, {
 					httpOnly: true,
 					secure: true,
 					sameSite: "strict",

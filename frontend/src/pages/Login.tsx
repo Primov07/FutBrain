@@ -1,14 +1,46 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify";
+import { useAuth } from '../auth/AuthContext';
 
 const Login: React.FC = () => {
+
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData: FormData = new FormData(e.currentTarget);
+    const object = Object.fromEntries(formData.entries());
+
+    const response = await fetch(
+			`${import.meta.env.VITE_API_URL}/users/login`,
+      {
+        credentials: "include",
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+        },
+        body: JSON.stringify(object)
+			},
+    );
+    
+    if (!response.ok) return toast.error("Грешка при влизане в профила!");
+
+    const data = await response.json();
+    setUser(data.user);
+    navigate("/")
+
+    toast.success("Вие успешно си влязохте в профила!");
+  }
   return (
     <div className="auth-container">
       <title>Вход – FutBrain</title>
       <h2>Добре дошъл отново</h2>
       <p>Влез в профила си, за да обсъждаш любимите си теми.</p>
       
-      <form className="contact-form">
+      <form className="contact-form" onSubmit={handleLogin}>
         <div className="form-group">
           <label htmlFor="username">Потребителско име</label>
           <input type="text" id="username" name="username" required />

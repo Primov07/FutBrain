@@ -103,6 +103,151 @@ header {
     border-color: #27ae60;
 }
 
+/* Header User Info */
+.user-info-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 5px 15px;
+    border-radius: 50px;
+    background-color: var(--off-white);
+    transition: background-color 0.3s;
+}
+
+.user-info-header:hover {
+    background-color: #e8eded;
+}
+
+.user-avatar-header {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--dark-green);
+    background-color: var(--white);
+}
+
+.user-details-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.username-header {
+    font-weight: 700;
+    color: var(--primary-blue);
+    font-size: 0.95rem;
+    line-height: 1.2;
+}
+
+.user-role-header {
+    font-size: 0.7rem;
+    color: var(--text-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-link-highlight {
+    color: #e74c3c !important;
+    font-weight: 800 !important;
+}
+
+.admin-link-highlight:hover {
+    color: #c0392b !important;
+}
+
+.user-menu-container {
+    position: relative;
+    cursor: pointer;
+}
+
+.user-dropdown-menu {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 10px 0;
+    min-width: 180px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1001;
+    overflow: hidden;
+}
+
+.user-dropdown-menu a, .btn-logout-dropdown {
+    padding: 12px 20px;
+    text-decoration: none;
+    color: var(--primary-blue);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+    text-align: left;
+    border: none;
+    background: none;
+    width: 100%;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.user-dropdown-menu a:hover, .btn-logout-dropdown:hover {
+    background-color: var(--off-white);
+    color: var(--dark-green);
+}
+
+.btn-logout-dropdown {
+    color: #e74c3c;
+    border-top: 1px solid #eee;
+}
+
+.btn-logout-dropdown:hover {
+    color: #c0392b;
+}
+
+.profile-container {
+    max-width: 1000px;
+    margin: 40px auto;
+}
+
+.profile-section {
+    background: var(--white);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+}
+
+.section-title {
+    color: var(--primary-blue);
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--off-white);
+    padding-bottom: 10px;
+}
+
+.accessories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+}
+
+.accessory-item {
+    background: var(--off-white);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary-blue);
+}
+
+.posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 /* Main Content */
 main {
     max-width: 1200px;

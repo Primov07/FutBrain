@@ -46,6 +46,7 @@ class PlayerController {
 			fs.rename(oldPath, newPath, (err) => {
 				if (err) throw new AppError("Грешка при запазване на снимката", 500);
 			});
+			res.status(201).json({ message: "Created: ", id });
 		} catch (err) {
 			next(err);
 		}
@@ -54,12 +55,13 @@ class PlayerController {
 	public async deleteById(req: Request, res: Response, next: NextFunction) {
 		try {
 			const id: string = req.params.id!.toString();
-			const deleted: void | null = await this.playerService.deleteById(id);
-			if (!deleted) throw new AppError("Играчът не е намерен", 404);
+			const ifDeleted: boolean = await this.playerService.deleteById(id);
+			if (!ifDeleted) throw new AppError("Играчът не е намерен", 404);
 			const path: string = `uploads/players/${id}.webp`;
 			fs.unlink(path, (err) => {
-				throw new AppError("Грешка при изтриване на снимката", 500);
+				if (err) throw new AppError("Грешка при изтриване на снимката", 500);
 			});
+			res.status(201).json({ message: "Deleted: ", id });
 		} catch (error) {
 			next(error);
 		}
@@ -85,6 +87,7 @@ class PlayerController {
 					if (err) console.error(err);
 				});
 			}
+			res.status(201).json({ message: "Updated: " + player.id });
 		} catch (error) {
 			next(error);
 		}

@@ -2,8 +2,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
 	id: string;
-    username: string;
-    isAdmin: boolean
+	username: string;
+	isAdmin: boolean;
+	pictureURL: string;
 };
 
 type AuthContextType = {
@@ -26,7 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 				if (!res.ok) throw new Error();
 				return res.json();
 			})
-			.then((data) => setUser(data.user))
+			.then((data) => setUser(data))
 			.catch(() => setUser(null))
 			.finally(() => setLoading(false));
 	}, []);
@@ -40,6 +41,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useAuth = () => {
 	const context = useContext(AuthContext);
-	if (!context) throw new Error("Функцията useAuth трябва да бъде използвана в AuthProvider");
+	if (!context)
+		throw new Error(
+			"Функцията useAuth трябва да бъде използвана в AuthProvider",
+		);
 	return context;
 };

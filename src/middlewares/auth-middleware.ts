@@ -2,12 +2,11 @@ import jwt from "jsonwebtoken";
 import express from "express";
 import { AppError } from "./error-handler";
 
-const SECRET_KEY: string = process.env.SECRET_KEY?.toString()!;
-
 interface JwtPayload {
 	id: string;
 	username: string;
 	isAdmin: boolean;
+	pictureURL: string;
 }
 
 export const authenticateToken = (
@@ -18,6 +17,7 @@ export const authenticateToken = (
 	try {
 		const token = req.cookies.token;
 
+		const SECRET_KEY: string = process.env.SECRET_KEY?.toString()!;
 		if (!token)
 			return next(
 				new AppError("Моля, влезте в профила си, за да получите достъп.", 401),
@@ -27,9 +27,7 @@ export const authenticateToken = (
 		(req as any).user = decoded;
 		next();
 	} catch (err) {
-		return next(
-			new AppError("Невалиден или изтекъл токен. Моля, влезте отново.", 401),
-		);
+		return next(new AppError("Невалиден или изтекъл токен!", 401));
 	}
 };
 

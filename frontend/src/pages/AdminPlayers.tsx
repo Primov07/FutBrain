@@ -9,42 +9,46 @@ import type { PlayerDTO } from ".";
 
 const AdminPlayers: React.FC = () => {
 	const [players, setPlayers] = React.useState<PlayerDTO[]>([]);
+	const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
 	React.useEffect(() => {
 		fetch(playersUrl)
 			.then((response) => response.json())
 			.then((data: PlayerDTO[]) => {
-				console.log("Fetched players:", data);
 				setPlayers(data);
+				setIsLoading(false);
 			})
-			.catch((err) => console.error(err));
-  }, []);
-  
+			.catch((err) => toast.error("Грешка при зареждането на играчите."));
+	}, []);
+
 	async function deletePlayer(id: string) {
 		if (window.confirm("Сигурни ли сте, че искате да изтриете този играч?")) {
 			try {
+				setIsLoading(true);
 				const response = await fetch(`${playersUrl}/${id}`, {
 					method: "DELETE",
 				});
-				if (response.ok) {
-					setPlayers(players.filter((p) => p.id !== id));
-					toast.success("Играчът беше изтрит успешно.");
-				} else {
-					toast.error("Грешка при изтриването на играча.");
-				}
+				if (!response.ok) throw new Error("Грешка при изтриването на играча.");
+				setPlayers(players.filter((p) => p.id !== id));
+				setIsLoading(false);
+				toast.success("Играчът беше изтрит успешно.");
 			} catch (err) {
-				console.error("Error deleting player:", err);
-				toast.error("Грешка при изтриването на играча.");
+				toast.error((err as any).message);
 			}
 		}
 	}
+
+	if (isLoading) return <div className="admin-content">Зареждане...</div>;
 
 	return (
 		<section className="data-section">
 			<div className="section-header">
 				<h2>База данни с играчи</h2>
 				<div className="header-actions">
-					<Link to="/admin/players/add" className="btn-add">
+					<Link
+						to="/admin/players/add"
+						className="btn-add"
+					>
 						<i className="fas fa-plus"></i> Добави нов играч
 					</Link>
 				</div>

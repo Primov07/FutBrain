@@ -25,29 +25,28 @@ const AdminPlayerUpdate: React.FC = () => {
 	React.useEffect(() => {
 		const fetchData = async () => {
 			try {
-				// Fetch clubs
-				const clubsRes = await fetch(clubsUrl);
-				const clubsData: Club[] = await clubsRes.json();
+				const clubsResult = await fetch(clubsUrl);
+				const clubsData: Club[] = await clubsResult.json();
 				setClubs(clubsData);
 
-				// Fetch player
 				if (id) {
 					const playerRes = await fetch(`${BASE_URL}/players/${id}`);
-					if (!playerRes.ok) throw new Error("Player not found");
+					if (!playerRes.ok) throw new Error("Играчът не е намерен.");
 					const player: PlayerDTO = await playerRes.json();
 					
 					setPlayerName(player.name);
 					setImagePreview(player.playerImg);
 					
-					// Find the club
 					const foundClub = clubsData.find(c => c.name === player.club) || null;
 					setSelectedClub(foundClub);
 				}
-				setIsLoading(false);
+				else throw new Error("Грешка при четенето на играча.")
 			} catch (err) {
-				console.error("Error fetching data:", err);
-				toast.error("Грешка при зареждане на данните.");
+				toast.error((err as any).message);
 				navigate("/admin/players");
+			}
+			finally {
+				setIsLoading(false);
 			}
 		};
 
@@ -78,7 +77,6 @@ const AdminPlayerUpdate: React.FC = () => {
 		e.preventDefault();
 
 		const formData: FormData = new FormData(e.currentTarget);
-        // Backend might expect id in a specific way
         formData.append("id", id || "");
 
 		try {
@@ -86,11 +84,11 @@ const AdminPlayerUpdate: React.FC = () => {
 				method: "PUT",
 				body: formData,
 			});
-			if (!res.ok) throw new Error();
+			if (!res.ok) throw new Error("Грешка при актуализирането на играча.");
 			toast.success("Данните за играча са успешно актуализирани.");
             navigate("/admin/players");
 		} catch (err) {
-			toast.error("Грешка при актуализирането на играча.");
+			toast.error((err as any).message);
 		}
 	};
 

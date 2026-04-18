@@ -21,11 +21,12 @@ export class PlayerRepository {
 		return model._id.toString();
 	}
 
-	public async deleteById(id: string) : Promise<void | null>{
+	public async deleteById(id: string) : Promise<boolean>{
 		const result: Player | null = await PlayerModel.findByIdAndDelete(new Types.ObjectId(id))
 			.lean()
 			.exec();
-		if (!result) return result;
+		if (!result) return false;
+		return true;
 	}
 
 	public async update(player: Player) : Promise<void | null>{

@@ -17,7 +17,7 @@ const Register: React.FC = () => {
       },
       body: JSON.stringify(object)
     });
-    if (!response.ok) throw new Error();
+    if (!response.ok) toast.error("Грешка при регистрация!");
     toast.success("Вие се регистрирахте успешно!");
   }
   return (

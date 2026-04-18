@@ -13,6 +13,7 @@ import cors from "cors";
 import { playerUpload } from "./middlewares/multerConfig";
 import { errorHandler } from "./middlewares/error-handler";
 import { authenticateToken } from "./middlewares/auth-middleware";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ app.use("/players", express.static(path.join(__dirname, "../uploads/players")));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 
 app.use("/accessories", accessoryRouter);
 app.use("/users", userRouter);
