@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from "react-toastify";
+import { BASE_URL } from '.';
 
 const Register: React.FC = () => {
 
@@ -10,7 +11,7 @@ const Register: React.FC = () => {
     const formData = new FormData(e.currentTarget);
     const object = Object.fromEntries(formData.entries());
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/users/register`, {
+    const response = await fetch(`${BASE_URL}/users/register`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'

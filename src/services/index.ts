@@ -16,3 +16,12 @@ export { PostService } from "./post-service";
 export { ReplyService } from "./reply-service";
 export { UserService } from "./user-service";
 export { VoteService } from "./vote-service";
+
+export type {
+	PlayerDTO,
+	CreatePlayerDTO,
+	UpdatePlayerDTO,
+	AccessoryDTO,
+	CreateAccessoryDTO,
+	UpdateAccessoryDTO,
+} from "../dtos";

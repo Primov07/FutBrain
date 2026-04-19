@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from ".";
 
@@ -16,6 +16,7 @@ const AdminPlayerAdd: React.FC = () => {
 	const [playerName, setPlayerName] = React.useState<string>("");
 	const [image, setImage] = React.useState<File | null>(null);
 	const [imagePreview, setImagePreview] = React.useState<string | null>(null);
+	const navigate = useNavigate();
 
 	React.useEffect(() => {
 		if (!image) {
@@ -39,7 +40,7 @@ const AdminPlayerAdd: React.FC = () => {
 				console.log("Fetched clubs:", data);
 				setClubs(data);
 			})
-			.catch((err) => toast.error(err));
+			.catch((err) => toast.error(err.message));
 	}, []);
 
 	const handleClubChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -59,7 +60,10 @@ const AdminPlayerAdd: React.FC = () => {
 				method: "POST",
 				body: formData,
 			});
-			toast.success("Играчът е успешно създаден.");
+			const json = await res.json();
+			if (!res.ok) toast.error(json.message);
+			else toast.success(json.message);
+			navigate("/admin/players");
 		} catch (err) {
 			toast.error((err as any).message);
 		}

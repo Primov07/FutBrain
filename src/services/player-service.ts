@@ -1,6 +1,6 @@
 import { PlayerRepository } from ".";
 import { Player } from ".";
-import { CreatePlayerDTO, PlayerDTO, UpdatePlayerDTO } from "../dtos/player";
+import { CreatePlayerDTO, PlayerDTO, UpdatePlayerDTO } from ".";
 
 export class PlayerService {
 	private playerRepository: PlayerRepository;
@@ -22,8 +22,10 @@ export class PlayerService {
 
 	public async create(player: CreatePlayerDTO): Promise<string> {
 		const newPlayer: Player = new Player();
+
 		newPlayer.name = player.name;
 		newPlayer.club = player.club;
+
 		return await this.playerRepository.create(newPlayer);
 	}
 
@@ -41,7 +43,7 @@ export class PlayerService {
 		return result;
 	}
 
-	public toPlayerDTO(player: Player): PlayerDTO {
+	private toPlayerDTO(player: Player): PlayerDTO {
 		return {
 			id: player.id,
 			name: player.name,

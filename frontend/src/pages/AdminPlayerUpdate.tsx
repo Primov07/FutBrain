@@ -33,19 +33,18 @@ const AdminPlayerUpdate: React.FC = () => {
 					const playerRes = await fetch(`${BASE_URL}/players/${id}`);
 					if (!playerRes.ok) throw new Error("Играчът не е намерен.");
 					const player: PlayerDTO = await playerRes.json();
-					
+
 					setPlayerName(player.name);
 					setImagePreview(player.playerImg);
-					
-					const foundClub = clubsData.find(c => c.name === player.club) || null;
+
+					const foundClub =
+						clubsData.find((c) => c.name === player.club) || null;
 					setSelectedClub(foundClub);
-				}
-				else throw new Error("Грешка при четенето на играча.")
+				} else throw new Error("Грешка при четенето на играча.");
 			} catch (err) {
 				toast.error((err as any).message);
 				navigate("/admin/players");
-			}
-			finally {
+			} finally {
 				setIsLoading(false);
 			}
 		};
@@ -77,24 +76,25 @@ const AdminPlayerUpdate: React.FC = () => {
 		e.preventDefault();
 
 		const formData: FormData = new FormData(e.currentTarget);
-        formData.append("id", id || "");
+		formData.append("id", id || "");
 
 		try {
 			const res = await fetch(`${BASE_URL}/players/`, {
 				method: "PUT",
 				body: formData,
 			});
-			if (!res.ok) throw new Error("Грешка при актуализирането на играча.");
-			toast.success("Данните за играча са успешно актуализирани.");
-            navigate("/admin/players");
+			const json = await res.json();
+			if (!res.ok) toast.error(json.message);
+			else toast.success(json.message);
+			navigate("/admin/players");
 		} catch (err) {
 			toast.error((err as any).message);
 		}
 	};
 
-    if (isLoading) {
-        return <div className="admin-content">Зареждане...</div>;
-    }
+	if (isLoading) {
+		return <div className="admin-content">Зареждане...</div>;
+	}
 
 	return (
 		<>
@@ -163,7 +163,9 @@ const AdminPlayerUpdate: React.FC = () => {
 					</div>
 
 					<div className="form-group">
-						<label htmlFor="player-img">Снимка на играча (оставете празно, ако не искате промяна)</label>
+						<label htmlFor="player-img">
+							Снимка на играча (оставете празно, ако не искате промяна)
+						</label>
 						<div className="file-input-wrapper">
 							<button
 								type="button"

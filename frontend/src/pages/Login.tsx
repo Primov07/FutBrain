@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 import { useAuth } from '../auth/AuthContext';
+import { BASE_URL } from '.';
 
 const Login: React.FC = () => {
 
@@ -15,7 +16,7 @@ const Login: React.FC = () => {
     const object = Object.fromEntries(formData.entries());
 
     const response = await fetch(
-			`${import.meta.env.VITE_API_URL}/users/login`,
+			`${BASE_URL}/users/login`,
       {
         credentials: "include",
 				method: "POST",

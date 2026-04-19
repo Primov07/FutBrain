@@ -11,31 +11,39 @@ export class PlayerRepository {
 	}
 
 	public async getById(id: string): Promise<Player | null> {
-		const player: Player | null = await PlayerModel.findById(new Types.ObjectId(id)).lean().exec();
+		const player: Player | null = await PlayerModel.findById(
+			new Types.ObjectId(id),
+		)
+			.lean()
+			.exec();
 		return player;
 	}
 
-	public async create(player: Player) : Promise<string>{
+	public async create(player: Player): Promise<string> {
 		const model: DocumentType<Player> = new PlayerModel(player);
 		model.save();
 		return model._id.toString();
 	}
 
-	public async deleteById(id: string) : Promise<boolean>{
-		const result: Player | null = await PlayerModel.findByIdAndDelete(new Types.ObjectId(id))
+	public async deleteById(id: string): Promise<boolean> {
+		const result: Player | null = await PlayerModel.findByIdAndDelete(
+			new Types.ObjectId(id),
+		)
 			.lean()
 			.exec();
 		if (!result) return false;
 		return true;
 	}
 
-	public async update(player: Player) : Promise<void | null>{
+	public async update(player: Player): Promise<void | null> {
 		const id: string = player.id.toString();
 		let found = await PlayerModel.findById(new Types.ObjectId(id));
 
 		if (!found) return null;
+
 		found.name = player.name;
 		found.club = player.club;
+		
 		await found.save();
 	}
 }

@@ -18,7 +18,7 @@ const AdminPlayers: React.FC = () => {
 				setPlayers(data);
 				setIsLoading(false);
 			})
-			.catch((err) => toast.error("Грешка при зареждането на играчите."));
+			.catch((err) => toast.error((err as any).message));
 	}, []);
 
 	async function deletePlayer(id: string) {
@@ -28,10 +28,13 @@ const AdminPlayers: React.FC = () => {
 				const response = await fetch(`${playersUrl}/${id}`, {
 					method: "DELETE",
 				});
-				if (!response.ok) throw new Error("Грешка при изтриването на играча.");
-				setPlayers(players.filter((p) => p.id !== id));
-				setIsLoading(false);
-				toast.success("Играчът беше изтрит успешно.");
+				const json = await response.json();
+				if (!response.ok) toast.error(json.message);
+				else {
+					setPlayers(players.filter((p) => p.id !== id));
+					setIsLoading(false);
+					toast.success(json.message);
+				}
 			} catch (err) {
 				toast.error((err as any).message);
 			}

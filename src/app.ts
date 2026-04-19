@@ -26,6 +26,7 @@ const PORT: number = parseInt(process.env.PORT!);
 const BASE_URL: string = `http://localhost:${PORT}`;
 export const clubsUrl: string = `${BASE_URL}/clubs`;
 export const playersUrl: string = `${BASE_URL}/players`;
+export const accessoriesUrl: string = `${BASE_URL}/accessories`;
 
 const viteUrl: string = process.env.VITE_FRONTEND_URL!;
 

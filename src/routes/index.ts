@@ -14,7 +14,7 @@ export {
 	postController,
 	replyController,
 	userController,
-} from "../controllers"
+} from "../controllers";
 
 export { app } from "../app";
 
@@ -24,3 +24,10 @@ export { playerRouter } from "./player-routes";
 export { postRouter } from "./post-routes";
 export { replyRouter } from "./reply-routes";
 export { userRouter } from "./user-routes";
+
+export {
+	authenticateToken,
+	restrictToAdmin,
+	playerUpload,
+	accessoryUpload,
+} from "../middlewares";

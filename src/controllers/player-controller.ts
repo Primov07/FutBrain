@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { PlayerService } from ".";
 import { VoteService } from ".";
-import { CreatePlayerDTO, PlayerDTO, UpdatePlayerDTO } from "../dtos/player";
+import { CreatePlayerDTO, PlayerDTO, UpdatePlayerDTO } from ".";
 import fs from "fs";
 import { AppError } from "../middlewares/error-handler";
 
@@ -46,7 +46,7 @@ class PlayerController {
 			fs.rename(oldPath, newPath, (err) => {
 				if (err) throw new AppError("Грешка при запазване на снимката", 500);
 			});
-			res.status(201).json({ message: "Created: ", id });
+			res.status(201).json({ message: "Играчът е създаден успешно!" });
 		} catch (err) {
 			next(err);
 		}
@@ -61,7 +61,7 @@ class PlayerController {
 			fs.unlink(path, (err) => {
 				if (err) throw new AppError("Грешка при изтриване на снимката", 500);
 			});
-			res.status(201).json({ message: "Deleted: ", id });
+			res.status(201).json({ message: "Играчът е изтрит успешно!" });
 		} catch (error) {
 			next(error);
 		}
@@ -80,14 +80,20 @@ class PlayerController {
 				const path: string = `uploads/players/${player.id}.webp`;
 				try {
 					fs.unlinkSync(path);
-				} catch (err) {}
+				} catch (err) {
+					throw new AppError((err as any).message, 500);
+				}
 
 				const oldPath: string = `uploads/players/${req.file?.filename!}`;
 				fs.rename(oldPath, path, (err) => {
-					if (err) console.error(err);
+					if (err)
+						throw new AppError(
+							"Грешка при обработката на снимката на играча!",
+							500,
+						);
 				});
 			}
-			res.status(201).json({ message: "Updated: " + player.id });
+			res.status(201).json({ message: "Играчът е актуализиран успешно!" });
 		} catch (error) {
 			next(error);
 		}

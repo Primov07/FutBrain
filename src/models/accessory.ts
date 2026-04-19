@@ -1,5 +1,5 @@
-import { getModelForClass, prop } from "@typegoose/typegoose";
-import { Types } from "mongoose";
+import { getModelForClass, prop, pre } from "@typegoose/typegoose";
+import { accessoriesUrl } from "../app";
 
 enum Type {
 	Ball = 1,
@@ -7,9 +7,17 @@ enum Type {
 	Shoes = 3,
 }
 
+@pre<Accessory>("save", async function () {
+	this.id = this._id.toString();
+	this.photo = `${accessoriesUrl}/${this.id}.webp`
+})
+	
+
 export class Accessory {
-	@prop({ default: new Types.ObjectId })
-	public _id!: Types.ObjectId;
+	/*@prop({ default: new Types.ObjectId })
+	public _id!: Types.ObjectId; */
+
+	public id!: string;
 
 	@prop({
 		required: true,
@@ -28,7 +36,7 @@ export class Accessory {
 			message: "Price should be positive integer!",
 		},
 	})
-	public price!: string;
+	public price!: number;
 
 	@prop({ required: true })
 	public endDate!: Date;

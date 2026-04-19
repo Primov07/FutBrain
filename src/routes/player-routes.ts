@@ -1,11 +1,8 @@
 import express from "express";
 import { playerController } from ".";
-import { playerUpload } from "../middlewares/multerConfig";
+import { playerUpload } from ".";
 
-import {
-	restrictToAdmin,
-	authenticateToken,
-} from "../middlewares/auth-middleware";
+import { restrictToAdmin, authenticateToken } from ".";
 
 export const playerRouter: express.Router = express.Router();
 
@@ -24,9 +21,16 @@ playerRouter.post(
 	playerController.getAll.bind(playerController),
 );
 
-playerRouter.delete("/:id", playerController.deleteById.bind(playerController));
+playerRouter.delete(
+	"/:id",
+	authenticateToken,
+	restrictToAdmin,
+	playerController.deleteById.bind(playerController),
+);
 playerRouter.put(
 	"/",
+	authenticateToken,
+	restrictToAdmin,
 	playerUpload.single("playerImg"),
 	playerController.update.bind(playerController),
 );

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 //import '../styles/user.css';
 import { toast } from "react-toastify";
+import { BASE_URL } from '.';
 
 const Profile: React.FC = () => {
   const { username } = useParams<{ username: string }>();
@@ -13,7 +14,7 @@ const Profile: React.FC = () => {
     const fetchProfile = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${username}`);
+        const response = await fetch(`${BASE_URL}/users/${username}`);
         if (!response.ok) {
           return toast.error('Потребителят не е намерен');
         }
