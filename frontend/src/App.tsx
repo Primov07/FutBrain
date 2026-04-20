@@ -21,6 +21,7 @@ import Store from "./pages/Store";
 import Rankings from "./pages/Rankings";
 import Contacts from "./pages/Contacts";
 import Profile from "./pages/Profile";
+import PostAdd from "./pages/PostAdd";
 import ProtectedRoute from "./auth/ProtectedRoute";
 
 function App() {
@@ -49,6 +50,14 @@ function App() {
 				<Route
 					path="posts"
 					element={<Posts />}
+				/>
+				<Route
+					path="posts/add"
+					element={
+						<ProtectedRoute isAdmin={false}>
+							<PostAdd />
+						</ProtectedRoute>
+					}
 				/>
 				<Route
 					path="store"

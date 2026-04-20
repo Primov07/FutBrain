@@ -4,3 +4,4 @@ export { PlayerModel, Player } from "./player";
 export { PostModel, Post } from "./post";
 export { ReplyModel, Reply } from "./reply";
 export { UserModel, User } from "./user";
+export { ReportModel, Report } from "./report";

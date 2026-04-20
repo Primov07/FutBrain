@@ -36,7 +36,7 @@ export class AccessoryRepository {
 	}
 
 	public async update(accessory: Accessory): Promise<void | null> {
-		const id: string = accessory.id.toString();
+		const id: string = accessory.id;
 		let found = await AccessoryModel.findById(new Types.ObjectId(id));
 
 		if (!found) return null;
@@ -47,6 +47,6 @@ export class AccessoryRepository {
 		found.endDate = accessory.endDate;
 		found.price = accessory.price;
 
-		await found.save();
+		found.save();
 	}
 }

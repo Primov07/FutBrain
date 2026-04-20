@@ -12,9 +12,16 @@ class PostController {
 
 	public async getAll(req: Request, res: Response, next: NextFunction) {
 		try {
-			const posts: Array<PostDTO> | null = await this.postService.getAll();
-			if (!posts) throw new AppError("Няма намерени публикации", 404);
-			res.json(posts);
+			const page = parseInt(req.query.page as string);
+			if (page) {
+				const posts: Array<PostDTO> | null = await this.postService.getPostsPaginated(page);
+				if (!posts) throw new AppError("Няма намерени публикации", 404);
+				res.json(posts);
+			} else {
+				const posts: Array<PostDTO> | null = await this.postService.getAll();
+				if (!posts) throw new AppError("Няма намерени публикации", 404);
+				res.json(posts);
+			}
 		} catch (error) {
 			next(error);
 		}
@@ -34,7 +41,8 @@ class PostController {
 	public async create(req: Request, res: Response, next: NextFunction) {
 		try {
 			const postDTO: CreatePostDTO = req.body;
-			await this.postService.create(postDTO);
+			const result = await this.postService.create(postDTO);
+			if (!result) throw new AppError("Грешка при създаването на играча!", 500);
 			res.status(201).json({ message: "Публикацията е създадена успешно!" });
 		} catch (err) {
 			next(err);

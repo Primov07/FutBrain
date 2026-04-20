@@ -5,7 +5,7 @@ const Contacts: React.FC = () => {
     <>
       <title>Контакти – FutBrain</title>
       <section className="section-header section-header-no-border text-center">
-        <h1>Контакти</h1>
+        <h1 className="text-light-green">Контакти</h1>
         <p>Имате въпрос или предложение? Свържете се с нас.</p>
       </section>
 

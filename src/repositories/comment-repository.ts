@@ -3,6 +3,23 @@ import { DocumentType } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 
 export class CommentRepository {
+	public async getByPostId(
+		postId: string,
+		skip: number,
+		limit: number,
+	): Promise<Array<Comment> | null> {
+		const comments: Array<Comment> | null = await CommentModel.find({
+			post: new Types.ObjectId(postId),
+		})
+			.populate("user", "username pictureURL")
+			.skip(skip)
+			.limit(limit)
+			.sort({ publishDate: -1 })
+			.lean()
+			.exec();
+		return comments;
+	}
+
 	public async getAll(): Promise<Array<Comment> | null> {
 		const comments: Array<Comment> | null = await CommentModel.find()
 			.lean()
@@ -36,14 +53,15 @@ export class CommentRepository {
 	}
 
 	public async update(comment: Comment): Promise<void | null> {
-		const id: string = (comment as any)._id || comment.id;
+		const id: string = comment.id;
 		let found = await CommentModel.findById(new Types.ObjectId(id));
 
 		if (!found) return null;
 
 		found.content = comment.content;
+		found.replies = comment.replies;
 		if (comment.photos) found.photos = comment.photos;
 
-		await found.save();
+		found.save();
 	}
 }

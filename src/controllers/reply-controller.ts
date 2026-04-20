@@ -10,6 +10,17 @@ class ReplyController {
 		private readonly likeService: LikeService,
 	) {}
 
+	public async getByCommentId(req: Request, res: Response, next: NextFunction) {
+		try {
+			const commentId = req.params.commentId?.toString()!;
+			const page = parseInt(req.query.page as string) || 1;
+			const replies = await this.replyService.getRepliesByComment(commentId, page);
+			res.json(replies);
+		} catch (error) {
+			next(error);
+		}
+	}
+
 	public async getAll(req: Request, res: Response, next: NextFunction) {
 		try {
 			const replies: Array<ReplyDTO> | null = await this.replyService.getAll();

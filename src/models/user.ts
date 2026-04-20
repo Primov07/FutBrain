@@ -4,21 +4,18 @@ import type { Comment } from "./comment";
 import type { Player } from "./player";
 import type { Post } from "./post";
 import type { Reply } from "./reply";
+import type { Report } from "./report";
 import bcrypt from "bcrypt";
 import { randomUUID, randomInt } from "crypto";
 import { Types } from "mongoose";
-
-enum Status {
-	Banned = -1,
-	Offline = 0,
-	Online = 1,
-}
+import { usersUrl } from "../app";
 
 @pre<User>("save", async function () {
 	if (this.isModified("passwordHash")) {
 		this.saltRounds = randomInt(1, 11);
 		this.passwordHash = await bcrypt.hash(this.passwordHash, this.saltRounds);
 	}
+	if (this.isModified("strikes") && this.strikes == 3) this.isBanned = true;
 })
 export class User {
 	@prop({ required: true, unique: true, default: randomUUID })
@@ -55,14 +52,20 @@ export class User {
 	@prop({ default: Date.now })
 	public createdAt!: Date;
 
-	@prop({ enum: Status, default: Status.Offline })
-	public status!: number;
-
 	@prop({ default: false })
 	public isAdmin!: boolean;
 
 	@prop({ default: 0 })
 	public futcoins!: number;
+
+	@prop({ default: 0 })
+	public strikes!: number;
+
+	@prop({ default: false })
+	public isBanned!: boolean;
+
+	@prop({ default: [] })
+	public reports!: Ref<Report, Types.ObjectId>;
 
 	@prop({
 		default: [],
@@ -114,7 +117,7 @@ export class User {
 	public likedPosts?: Ref<Post, Types.ObjectId>[];
 
 	@prop({
-		default: "../uploads/user.png",
+		default: `${usersUrl}/users/user.png`,
 	})
 	public pictureURL?: string;
 

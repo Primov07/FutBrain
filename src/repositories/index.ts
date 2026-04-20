@@ -11,4 +11,5 @@ export { PlayerModel, Player } from "../models";
 export { PostModel, Post } from "../models";
 export { ReplyModel, Reply } from "../models";
 export { UserModel, User } from "../models";
+export { ReportModel, Report } from "../models";
 

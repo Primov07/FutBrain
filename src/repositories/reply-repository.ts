@@ -3,6 +3,22 @@ import { ReplyModel, Reply } from ".";
 import { DocumentType } from "@typegoose/typegoose";
 
 export class ReplyRepository {
+	public async getByCommentId(
+		commentId: string,
+		skip: number,
+		limit: number,
+	): Promise<Array<Reply> | null> {
+		const replies: Array<Reply> | null = await ReplyModel.find({
+			comment: new Types.ObjectId(commentId),
+		})
+			.skip(skip)
+			.limit(limit)
+			.sort({ publishDate: -1 })
+			.lean()
+			.exec();
+		return replies;
+	}
+
 	public async getAll(): Promise<Array<Reply> | null> {
 		const replies: Array<Reply> | null = await ReplyModel.find()
 			.lean()
@@ -34,7 +50,7 @@ export class ReplyRepository {
 	}
 
 	public async update(reply: Reply): Promise<void | null> {
-		const id: string = (reply as any)._id || reply.id;
+		const id: string = reply.id;
 		let found = await ReplyModel.findById(new Types.ObjectId(id));
 
 		if (!found) return null;
@@ -42,6 +58,6 @@ export class ReplyRepository {
 		found.content = reply.content;
 		if (reply.photos) found.photos = reply.photos;
 
-		await found.save();
+		found.save();
 	}
 }

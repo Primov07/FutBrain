@@ -5,7 +5,7 @@ const Store: React.FC = () => {
     <>
       <title>Магазин за аксесоари – FutBrain</title>
       <section className="section-header section-header-no-border">
-        <h1>Магазин за аксесоари</h1>
+        <h1 className="text-light-green">Магазин за аксесоари</h1>
         <p>Персонализирай своя профил с уникални банери и ефекти.</p>
       </section>
 

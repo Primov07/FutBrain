@@ -29,7 +29,8 @@ class UserController {
 
 	public async create(req: Request, res: Response) {
 		const user: CreateUserDTO = req.body;
-		await this.userService.create(user);
+		const result = await this.userService.create(user);
+		if (!result) throw new AppError("Това потребителско име вече съществува!", 422);
 		res.status(201).json({ message: "User created successfully" });
 	}
 

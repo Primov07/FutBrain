@@ -10,6 +10,17 @@ class CommentController {
 		private readonly likeService: LikeService,
 	) {}
 
+	public async getByPostId(req: Request, res: Response, next: NextFunction) {
+		try {
+			const postId = req.params.postId?.toString()!;
+			const page = parseInt(req.query.page as string) || 1;
+			const comments = await this.commentService.getCommentsByPost(postId, page);
+			res.json(comments);
+		} catch (error) {
+			next(error);
+		}
+	}
+
 	public async getAll(req: Request, res: Response, next: NextFunction) {
 		try {
 			const comments: Array<CommentDTO> | null =

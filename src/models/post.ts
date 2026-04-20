@@ -6,10 +6,20 @@ import { Types } from "mongoose";
 @pre<Post>("save", async function () {
 	this.id = this._id.toString();
 })
-
 export class Post {
 	@prop()
 	public id!: string;
+
+	@prop({
+		required: true,
+		validate: {
+			validator: (v) => {
+				return v.length > 5;
+			},
+		},
+		message: "Заглавието трябва да бъде дълго поне 5 знака",
+	})
+	public title!: string;
 
 	@prop({
 		required: true,

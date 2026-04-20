@@ -36,7 +36,7 @@ export class PlayerRepository {
 	}
 
 	public async update(player: Player): Promise<void | null> {
-		const id: string = player.id.toString();
+		const id: string = player.id;
 		let found = await PlayerModel.findById(new Types.ObjectId(id));
 
 		if (!found) return null;
@@ -44,6 +44,6 @@ export class PlayerRepository {
 		found.name = player.name;
 		found.club = player.club;
 		
-		await found.save();
+		found.save();
 	}
 }

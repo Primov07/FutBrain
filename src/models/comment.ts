@@ -2,6 +2,7 @@ import { getModelForClass, prop, type Ref, pre } from "@typegoose/typegoose";
 import type { Post } from "./post";
 import type { User } from "./user";
 import { Types } from "mongoose";
+import { Reply } from "./reply";
 
 @pre<Comment>("save", async function () {
 	this.id = this._id.toString();
@@ -27,7 +28,7 @@ export class Comment {
 	@prop({
 		required: true,
 		ref: "User",
-		type: Types.ObjectId,
+		type: String,
 	})
 	public user!: Ref<User, string>;
 
@@ -47,5 +48,12 @@ export class Comment {
 		type: String
 	})
 	public likedBy?: Ref<User, string>[];
+
+	@prop({
+		default: [],
+		ref: "Reply",
+		type: Types.ObjectId
+	})
+	public replies!: Ref<Reply, Types.ObjectId>[];
 }
 export const CommentModel = getModelForClass(Comment);

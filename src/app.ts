@@ -27,6 +27,7 @@ const BASE_URL: string = `http://localhost:${PORT}`;
 export const clubsUrl: string = `${BASE_URL}/clubs`;
 export const playersUrl: string = `${BASE_URL}/players`;
 export const accessoriesUrl: string = `${BASE_URL}/accessories`;
+export const usersUrl: string = `${BASE_URL}/users`;
 
 const viteUrl: string = process.env.VITE_FRONTEND_URL!;
 
@@ -41,10 +42,11 @@ app.use(express.static(path.resolve(__dirname, "../../view")));
 app.use("/clubs", express.static(path.join(__dirname, "../uploads/clubs")));
 app.use("/players", express.static(path.join(__dirname, "../uploads/players")));
 app.use("/accessories", express.static(path.join(__dirname, "../uploads/accessories")));
+app.use("/users", express.static(path.join(__dirname, "../uploads/users")));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.use("/accessories", accessoryRouter);
 app.use("/users", userRouter);

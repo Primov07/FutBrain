@@ -3,8 +3,23 @@ import { PostModel, Post } from ".";
 import { Types } from "mongoose";
 
 export class PostRepository {
+	public async getAllPaginated(
+		skip: number,
+		limit: number,
+	): Promise<Array<Post> | null> {
+		const posts: Array<Post> | null = await PostModel.find()
+			.skip(skip)
+			.limit(limit)
+			.sort({ publishDate: -1 })
+			.populate("user", "username pictureURL")
+			.lean()
+			.exec();
+		return posts;
+	}
+
 	public async getAll(): Promise<Array<Post> | null> {
 		const posts: Array<Post> | null = await PostModel.find()
+			.populate("user", "username pictureURL")
 			.lean()
 			.exec();
 		return posts;
@@ -12,6 +27,7 @@ export class PostRepository {
 
 	public async getById(id: string): Promise<Post | null> {
 		const post: Post | null = await PostModel.findById(new Types.ObjectId(id))
+			.populate("user", "username pictureURL")
 			.lean()
 			.exec();
 		return post;
@@ -34,13 +50,15 @@ export class PostRepository {
 	}
 
 	public async update(post: Post): Promise<void | null> {
-		const id: string = (post as any)._id || post.id;
+		const id: string = post.id;
 		let found = await PostModel.findById(new Types.ObjectId(id));
 
 		if (!found) return null;
 
+		found.title = post.title;
 		found.content = post.content;
+		found.comments = post.comments;
 		
-		await found.save();
+		found.save();
 	}
 }

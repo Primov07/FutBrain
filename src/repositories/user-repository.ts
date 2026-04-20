@@ -66,7 +66,15 @@ export class UserRepository {
 		let found = await UserModel.findById(id);
 
 		if (!found) return null;
-		found = new UserModel(user);
-		await found.save();
+
+		found.username = user.username;
+		found.passwordHash = user.passwordHash;
+		found.strikes = user.strikes;
+		found.isAdmin = user.isAdmin;
+		found.email = user.email;
+		found.comments = user.comments!;
+		found.posts = user.posts!;
+		found.replies = user.replies!;
+		found.save();
 	}
 }
