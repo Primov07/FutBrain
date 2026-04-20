@@ -1,5 +1,5 @@
 import express from "express";
-import { replyController } from ".";
+import { replyController } from "../controllers";
 
 export const replyRouter: express.Router = express.Router();
 

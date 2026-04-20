@@ -27,6 +27,7 @@ const AdminPlayers: React.FC = () => {
 				setIsLoading(true);
 				const response = await fetch(`${playersUrl}/${id}`, {
 					method: "DELETE",
+					credentials: "include",
 				});
 				const json = await response.json();
 				if (!response.ok) toast.error(json.message);

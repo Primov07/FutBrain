@@ -10,18 +10,19 @@ export class AccessoryService {
 	}
 
 	public async getAll(): Promise<Array<AccessoryDTO> | null> {
-		const accessories: Array<Accessory> | null = await this.accessoryRepository.getAll();
-		if (accessories) return accessories.map(a => this.toAccessoryDTO(a));
+		const accessories: Array<Accessory> | null =
+			await this.accessoryRepository.getAll();
+		if (accessories) return accessories.map((a) => this.toAccessoryDTO(a));
 		return null;
 	}
 
 	public async getById(id: string): Promise<AccessoryDTO | null> {
 		const accessory = await this.accessoryRepository.getById(id);
-		if (accessory) return this.toAccessoryDTO(accessory); 
+		if (accessory) return this.toAccessoryDTO(accessory);
 		return null;
 	}
 
-	public async create(accessory: CreateAccessoryDTO) : Promise<string>{
+	public async create(accessory: CreateAccessoryDTO): Promise<string> {
 		const newAccessory = new Accessory();
 
 		newAccessory.endDate = accessory.endDate;
@@ -37,7 +38,7 @@ export class AccessoryService {
 		return ifDeleted;
 	}
 
-	public async update(accessory: UpdateAccessoryDTO) : Promise <void | null> {
+	public async update(accessory: UpdateAccessoryDTO): Promise<void | null> {
 		const update = new Accessory();
 
 		update.id = accessory.id;
@@ -47,17 +48,17 @@ export class AccessoryService {
 		update.type = accessory.type;
 
 		const result = await this.accessoryRepository.update(update);
-		return result; 
+		return result;
 	}
 
 	private toAccessoryDTO(accessory: Accessory): AccessoryDTO {
 		return {
-			id: accessory.id.toString(),
+			id: accessory.id,
 			name: accessory.name,
 			price: accessory.price,
 			endDate: accessory.endDate,
 			photo: accessory.photo,
-			type: accessory.type
-		}
+			type: accessory.type,
+		};
 	}
 }

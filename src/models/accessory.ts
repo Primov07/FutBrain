@@ -14,9 +14,7 @@ enum Type {
 	
 
 export class Accessory {
-	/*@prop({ default: new Types.ObjectId })
-	public _id!: Types.ObjectId; */
-
+	@prop()
 	public id!: string;
 
 	@prop({
@@ -25,7 +23,7 @@ export class Accessory {
 	})
 	public name!: string;
 
-	@prop({ required: true })
+	@prop({ })
 	public photo!: string;
 
 	@prop({

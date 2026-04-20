@@ -17,24 +17,30 @@ export class PostRepository {
 		return post;
 	}
 
-	public async create(post: Post) {
-		const model : DocumentType<Post> = new PostModel(post);
-		model.save();
+	public async create(post: Post): Promise<string> {
+		const model: DocumentType<Post> = new PostModel(post);
+		await model.save();
+		return model._id.toString();
 	}
 
-	public async deleteById(id: string) : Promise<Post | null>{
-		const result: Post | null = await PostModel.findByIdAndDelete(new Types.ObjectId(id))
+	public async deleteById(id: string): Promise<boolean> {
+		const result: Post | null = await PostModel.findByIdAndDelete(
+			new Types.ObjectId(id),
+		)
 			.lean()
 			.exec();
-		return result;
+		if (!result) return false;
+		return true;
 	}
 
-	public async update(post: Post) : Promise<void | null>{
-		const id: string = post._id.toString();
+	public async update(post: Post): Promise<void | null> {
+		const id: string = (post as any)._id || post.id;
 		let found = await PostModel.findById(new Types.ObjectId(id));
 
 		if (!found) return null;
-		found = new PostModel(post);
+
+		found.content = post.content;
+		
 		await found.save();
 	}
 }

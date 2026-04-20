@@ -21,7 +21,7 @@ export class PlayerRepository {
 
 	public async create(player: Player): Promise<string> {
 		const model: DocumentType<Player> = new PlayerModel(player);
-		model.save();
+		await model.save();
 		return model._id.toString();
 	}
 

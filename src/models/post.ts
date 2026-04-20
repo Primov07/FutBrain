@@ -1,11 +1,15 @@
-import { getModelForClass, prop, type Ref } from "@typegoose/typegoose";
+import { getModelForClass, prop, type Ref, pre } from "@typegoose/typegoose";
 import type { User } from "./user";
 import type { Comment } from "./comment";
 import { Types } from "mongoose";
 
+@pre<Post>("save", async function () {
+	this.id = this._id.toString();
+})
+
 export class Post {
 	@prop()
-	public _id!: Types.ObjectId;
+	public id!: string;
 
 	@prop({
 		required: true,
@@ -37,8 +41,8 @@ export class Post {
 	@prop({
 		default: null,
 		ref: "User",
-		type: Types.ObjectId,
+		type: String,
 	})
-	public user!: Ref<User, Types.ObjectId>;
+	public user!: Ref<User, string>;
 }
 export const PostModel = getModelForClass(Post);

@@ -1,5 +1,5 @@
 import express from "express";
-import { commentController } from ".";
+import { commentController } from "../controllers";
 
 export const commentRouter: express.Router = express.Router();
 

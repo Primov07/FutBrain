@@ -1,4 +1,5 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from ".";
 import type { AccessoryDTO } from ".";
@@ -7,6 +8,7 @@ const accessoriesUrl = `${BASE_URL}/accessories`;
 
 const AdminAccessories: React.FC = () => {
 	const [accessories, setAccessories] = React.useState<AccessoryDTO[]>([]);
+	const navigate = useNavigate();
 
 	React.useEffect(() => {
 		fetch(accessoriesUrl)
@@ -54,9 +56,9 @@ const AdminAccessories: React.FC = () => {
 			<div className="section-header">
 				<h2>Управление на аксесоари (Магазин)</h2>
 				<div className="header-actions">
-					<button className="btn-add" onClick={() => toast.info("Функционалността за добавяне ще бъде добавена скоро.")}>
+					<Link to="/admin/accessories/add" className="btn-add">
 						<i className="fas fa-plus"></i> Добави нов аксесоар
-					</button>
+					</Link>
 				</div>
 			</div>
 			<div className="table-responsive">
@@ -83,6 +85,13 @@ const AdminAccessories: React.FC = () => {
 									<td>{a.price}</td>
 									<td>{new Date(a.endDate).toLocaleDateString("bg-BG")}</td>
 									<td className="actions">
+										<button
+											className="btn-edit"
+											title="Редактирай"
+											onClick={() => navigate(`/admin/accessories/update/${a.id}`)}
+										>
+											<i className="fas fa-edit"></i>
+										</button>
 										<button
 											className="btn-delete"
 											title="Изтрий"

@@ -58,7 +58,8 @@ export class UserService {
 
 	public async getByUsername(username: string): Promise<UserDTO | null> {
 		const user: User | null = await this.userRepository.getByUsername(username);
-		return this.toUserDTO(user!);
+		if (!user) return null;
+		return this.toUserDTO(user);
 	}
 
 	public toUserDTO(user: User): UserDTO {

@@ -1,13 +1,22 @@
 import express from "express";
-import { playerController } from ".";
-import { playerUpload } from ".";
-
-import { restrictToAdmin, authenticateToken } from ".";
+import { playerController } from "../controllers";
+import {
+	playerUpload,
+	restrictToAdmin,
+	authenticateToken,
+} from "../middlewares";
 
 export const playerRouter: express.Router = express.Router();
 
+playerRouter.get(
+	"/count",
+	authenticateToken,
+	restrictToAdmin,
+	playerController.getCount.bind(playerController),
+);
 playerRouter.get("/", playerController.getAll.bind(playerController));
 playerRouter.get("/:id", playerController.getById.bind(playerController));
+
 playerRouter.post(
 	"/",
 	authenticateToken,

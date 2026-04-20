@@ -67,6 +67,17 @@ class PlayerController {
 		}
 	}
 
+public async getCount(req: Request, res: Response, next: NextFunction) {
+		try {
+			const players: Array<PlayerDTO> | null =
+				await this.playerService.getAll();
+			if (!players) res.json({ count: 0 });
+			else res.json({ count: players.length });
+		} catch (err) {
+			next(err);
+		}
+	}
+
 	public async update(req: Request, res: Response, next: NextFunction) {
 		try {
 			const player: UpdatePlayerDTO = {
@@ -99,9 +110,10 @@ class PlayerController {
 		}
 	}
 
-	public vote(req: Request, res: Response, next: NextFunction) {
+	public async vote(req: Request, res: Response, next: NextFunction) {
 		try {
 			this.voteService.handleVote(req.body.playerId, req.body.userId);
+			res.status(201).json({ message: "Гласуването беше успешно!" });
 		} catch (err) {
 			next(err);
 		}

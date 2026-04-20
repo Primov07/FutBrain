@@ -41,10 +41,12 @@ class AccessoryController {
 			if (!req.file) throw new AppError("Аксесоарът трябва да има снимка", 400);
 			const oldPath: string = `uploads/accessories/${req.file?.filename!}`;
 			const newPath: string = `uploads/accessories/${id}.webp`;
-			fs.rename(oldPath, newPath, (err) => {
-				if (err) throw new AppError("Грешка при запазване на снимката", 500);
-			});
-			res.status(201).json({ message: "Играчът е създаден успешно!" });
+			try {
+				fs.renameSync(oldPath, newPath);
+			} catch (err) {
+				throw new AppError("Грешка при запазване на снимката", 500);
+			}
+			res.status(201).json({ message: "Аксесоарът е създаден успешно!" });
 		} catch (err) {
 			next(err);
 		}
@@ -62,6 +64,17 @@ class AccessoryController {
 			res.status(201).json({ message: "Аксесоарът е изтрит успешно!" });
 		} catch (error) {
 			next(error);
+		}
+	}
+
+	public async getCount(req: Request, res: Response, next: NextFunction) {
+		try {
+			const accessories: Array<AccessoryDTO> | null =
+				await this.accessoryService.getAll();
+			if (!accessories) res.json({ count: 0 });
+			else res.json({ count: accessories.length });
+		} catch (err) {
+			next(err);
 		}
 	}
 

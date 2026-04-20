@@ -1,11 +1,15 @@
-import { getModelForClass, prop, type Ref } from "@typegoose/typegoose";
+import { getModelForClass, prop, type Ref, pre } from "@typegoose/typegoose";
 import type { Post } from "./post";
 import type { User } from "./user";
 import { Types } from "mongoose";
 
+@pre<Comment>("save", async function () {
+	this.id = this._id.toString();
+})
+
 export class Comment {
 	@prop()
-	public _id!: Types.ObjectId;
+	public id!: string;
 
 	@prop({
 		validate: {
@@ -25,7 +29,7 @@ export class Comment {
 		ref: "User",
 		type: Types.ObjectId,
 	})
-	public user!: Ref<User, Types.ObjectId>;
+	public user!: Ref<User, string>;
 
 	@prop({
 		required: true,

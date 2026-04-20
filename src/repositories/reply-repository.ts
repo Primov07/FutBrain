@@ -17,24 +17,31 @@ export class ReplyRepository {
 		return reply;
 	}
 
-	public async create(reply: Reply) {
+	public async create(reply: Reply): Promise<string> {
 		const model: DocumentType<Reply> = new ReplyModel(reply);
-		model.save();
+		await model.save();
+		return model._id.toString();
 	}
 
-	public async deleteById(id: string): Promise<Reply | null>{
-		const result: Reply | null = await ReplyModel.findByIdAndDelete(new Types.ObjectId(id))
+	public async deleteById(id: string): Promise<boolean> {
+		const result: Reply | null = await ReplyModel.findByIdAndDelete(
+			new Types.ObjectId(id),
+		)
 			.lean()
 			.exec();
-		return result;
+		if (!result) return false;
+		return true;
 	}
 
-	public async update(reply: Reply) {
-		const id: string = reply._id.toString();
+	public async update(reply: Reply): Promise<void | null> {
+		const id: string = (reply as any)._id || reply.id;
 		let found = await ReplyModel.findById(new Types.ObjectId(id));
 
 		if (!found) return null;
-		found = new ReplyModel(reply);
+
+		found.content = reply.content;
+		if (reply.photos) found.photos = reply.photos;
+
 		await found.save();
 	}
 }

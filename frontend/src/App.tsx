@@ -11,6 +11,8 @@ import AdminPlayerUpdate from "./pages/AdminPlayerUpdate";
 import AdminComments from "./pages/AdminComments";
 import AdminReplies from "./pages/AdminReplies";
 import AdminAccessories from "./pages/AdminAccessories";
+import AdminAccessoryAdd from "./pages/AdminAccessoryAdd";
+import AdminAccessoryUpdate from "./pages/AdminAccessoryUpdate";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Game from "./pages/Game";
@@ -109,6 +111,14 @@ function App() {
 				<Route
 					path="accessories"
 					element={<AdminAccessories />}
+				/>
+				<Route
+					path="accessories/add"
+					element={<AdminAccessoryAdd />}
+				/>
+				<Route
+					path="accessories/update/:id"
+					element={<AdminAccessoryUpdate />}
 				/>
 			</Route>
 

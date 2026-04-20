@@ -95,6 +95,20 @@ class UserController {
 			next(error);
 		}
 	}
+
+	public async getCount(req: Request, res: Response, next: NextFunction)
+		{
+			try {
+				const users: Array<UserDTO> | null =
+					await this.userService.getAll();
+				if (!users) res.json({count: 0});
+				else res.json({ count: users.length });
+			}
+			catch (err)
+			{
+				next(err);
+			}
+		} 
 	public async getByUsername(req: Request, res: Response, next: NextFunction) {
 		try {
 			const username: string = req.params.username!.toString();

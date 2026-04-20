@@ -1,6 +1,6 @@
 import { CommentModel, Comment } from ".";
 import { DocumentType } from "@typegoose/typegoose";
-import {Types} from "mongoose";
+import { Types } from "mongoose";
 
 export class CommentRepository {
 	public async getAll(): Promise<Array<Comment> | null> {
@@ -11,30 +11,39 @@ export class CommentRepository {
 	}
 
 	public async getById(id: string): Promise<Comment | null> {
-		const comment: Comment | null = await CommentModel.findById(new Types.ObjectId(id))
+		const comment: Comment | null = await CommentModel.findById(
+			new Types.ObjectId(id),
+		)
 			.lean()
 			.exec();
 		return comment;
 	}
 
-	public async create(comment: Comment) {
+	public async create(comment: Comment): Promise<string> {
 		const model: DocumentType<Comment> = new CommentModel(comment);
-		model.save();
+		await model.save();
+		return model._id.toString();
 	}
 
-	public async deleteById(id: string) : Promise<Comment | null>{
-		const result: Comment | null = await CommentModel.findByIdAndDelete(new Types.ObjectId(id))
+	public async deleteById(id: string): Promise<boolean> {
+		const result: Comment | null = await CommentModel.findByIdAndDelete(
+			new Types.ObjectId(id),
+		)
 			.lean()
 			.exec();
-		return result;
+		if (!result) return false;
+		return true;
 	}
 
-	public async update(comment: Comment) : Promise<void | null>{
-		const id: string = comment._id.toString();
+	public async update(comment: Comment): Promise<void | null> {
+		const id: string = (comment as any)._id || comment.id;
 		let found = await CommentModel.findById(new Types.ObjectId(id));
 
 		if (!found) return null;
-		found = new CommentModel(comment);
+
+		found.content = comment.content;
+		if (comment.photos) found.photos = comment.photos;
+
 		await found.save();
 	}
 }

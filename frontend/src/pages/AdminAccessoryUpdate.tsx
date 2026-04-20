@@ -2,22 +2,16 @@ import React from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from ".";
-import type { PlayerDTO } from ".";
+import type { AccessoryDTO } from ".";
 
-interface Club {
-	name: string;
-	url: string;
-}
-
-const clubsUrl: string = `${BASE_URL}/clubs`;
-
-const AdminPlayerUpdate: React.FC = () => {
+const AdminAccessoryUpdate: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 
-	const [clubs, setClubs] = React.useState<Club[]>([]);
-	const [selectedClub, setSelectedClub] = React.useState<Club | null>(null);
-	const [playerName, setPlayerName] = React.useState<string>("");
+	const [name, setName] = React.useState<string>("");
+	const [price, setPrice] = React.useState<number>(0);
+	const [endDate, setEndDate] = React.useState<string>("");
+	const [type, setType] = React.useState<number>(1);
 	const [image, setImage] = React.useState<File | null>(null);
 	const [imagePreview, setImagePreview] = React.useState<string | null>(null);
 	const [isLoading, setIsLoading] = React.useState<boolean>(true);
@@ -25,25 +19,24 @@ const AdminPlayerUpdate: React.FC = () => {
 	React.useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const clubsResult = await fetch(clubsUrl);
-				const clubsData: Club[] = await clubsResult.json();
-				setClubs(clubsData);
-
 				if (id) {
-					const playerRes = await fetch(`${BASE_URL}/players/${id}`);
-					if (!playerRes.ok) throw new Error("Играчът не е намерен.");
-					const player: PlayerDTO = await playerRes.json();
+					const res = await fetch(`${BASE_URL}/accessories/${id}`);
+					if (!res.ok) throw new Error("Аксесоарът не е намерен.");
+					const accessory: AccessoryDTO = await res.json();
 
-					setPlayerName(player.name);
-					setImagePreview(player.playerImg);
-
-					const foundClub =
-						clubsData.find((c) => c.name === player.club) || null;
-					setSelectedClub(foundClub);
-				} else throw new Error("Грешка при четенето на играча.");
+					setName(accessory.name);
+					setPrice(accessory.price);
+					setType(accessory.type);
+					setImagePreview(accessory.photo);
+					
+					// Format date to YYYY-MM-DD for input[type="date"]
+					const date = new Date(accessory.endDate);
+					const formattedDate = date.toISOString().split("T")[0];
+					setEndDate(formattedDate);
+				} else throw new Error("Грешка при четенето на аксесоара.");
 			} catch (err) {
 				toast.error((err as any).message);
-				navigate("/admin/players");
+				navigate("/admin/accessories");
 			} finally {
 				setIsLoading(false);
 			}
@@ -66,28 +59,23 @@ const AdminPlayerUpdate: React.FC = () => {
 		return () => URL.revokeObjectURL(objectUrl);
 	}, [image]);
 
-	const handleClubChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const clubName: string = event.target.value;
-		const club: Club | null = clubs.find((c) => c.name === clubName) || null;
-		setSelectedClub(club);
-	};
-
-	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
 		const formData: FormData = new FormData(e.currentTarget);
 		formData.append("id", id || "");
 
 		try {
-			const res = await fetch(`${BASE_URL}/players/`, {
-				credentials: "include",
+			const res = await fetch(`${BASE_URL}/accessories/`, {
 				method: "PUT",
 				body: formData,
 			});
 			const json = await res.json();
 			if (!res.ok) toast.error(json.message);
-			else toast.success(json.message);
-			navigate("/admin/players");
+			else {
+				toast.success(json.message);
+				navigate("/admin/accessories");
+			}
 		} catch (err) {
 			toast.error((err as any).message);
 		}
@@ -100,72 +88,72 @@ const AdminPlayerUpdate: React.FC = () => {
 	return (
 		<>
 			<div className="section-header">
-				<h2>Редактирай играч</h2>
+				<h2>Редактирай аксесоар</h2>
 			</div>
 
 			<div className="admin-form-container">
 				<form
 					className="admin-form"
-					id="player-form"
+					id="accessory-form"
 					onSubmit={handleSubmit}
 				>
 					<div className="form-group">
-						<label htmlFor="player-name">Име на играча</label>
+						<label htmlFor="name">Име на аксесоара</label>
 						<input
 							type="text"
-							id="player-name"
-							name="playerName"
-							value={playerName}
-							onChange={(e) => setPlayerName(e.target.value)}
+							id="name"
+							name="name"
+							value={name}
+							onChange={(e) => setName(e.target.value)}
 							placeholder="Въведете име..."
 							required
 						/>
 					</div>
 
 					<div className="form-group">
-						<label htmlFor="player-club">Клуб</label>
-						<select
-							id="player-club"
+						<label htmlFor="price">Цена (FutCoins)</label>
+						<input
+							type="number"
+							id="price"
+							name="price"
+							value={price}
+							onChange={(e) => setPrice(Number(e.target.value))}
+							placeholder="Въведете цена..."
 							required
-							value={selectedClub?.name || ""}
-							name="club"
-							onChange={handleClubChange}
-						>
-							<option
-								value=""
-								disabled
-							>
-								Изберете клуб...
-							</option>
-							{clubs.map((club) => (
-								<option
-									key={club.name}
-									value={club.name}
-								>
-									{club.name}
-								</option>
-							))}
-						</select>
-					</div>
-
-					<div className="form-group club-preview-container">
-						<label>Лого на избрания клуб</label>
-						<div
-							className="club-logo-display"
-							id="club-logo-preview"
-						>
-							{selectedClub ?
-								<img
-									src={`${selectedClub.url}`}
-									alt={`${selectedClub.name}`}
-								/>
-							:	<p>Няма избран клуб</p>}
-						</div>
+							min="0"
+						/>
 					</div>
 
 					<div className="form-group">
-						<label htmlFor="player-img">
-							Снимка на играча (оставете празно, ако не искате промяна)
+						<label htmlFor="type">Тип</label>
+						<select
+							id="type"
+							name="type"
+							required
+							value={type}
+							onChange={(e) => setType(Number(e.target.value))}
+						>
+							<option value={1}>Топка</option>
+							<option value={2}>Значка</option>
+							<option value={3}>Обувки</option>
+						</select>
+					</div>
+
+					<div className="form-group">
+						<label htmlFor="endDate">Крайна дата</label>
+						<input
+							type="date"
+							id="endDate"
+							name="endDate"
+							value={endDate}
+							onChange={(e) => setEndDate(e.target.value)}
+							required
+						/>
+					</div>
+
+					<div className="form-group">
+						<label htmlFor="accessory-img">
+							Снимка на аксесоара (оставете празно, ако не искате промяна)
 						</label>
 						<div className="file-input-wrapper">
 							<button
@@ -176,8 +164,8 @@ const AdminPlayerUpdate: React.FC = () => {
 							</button>
 							<input
 								type="file"
-								id="player-img"
-								name="playerImg"
+								id="accessory-img"
+								name="accessoryImg"
 								accept="image/*"
 								onChange={(e) => setImage(e.target.files?.[0] || null)}
 							/>
@@ -188,7 +176,7 @@ const AdminPlayerUpdate: React.FC = () => {
 						<label>Текуща/Нова снимка</label>
 						<div
 							className="club-logo-display"
-							id="player-image-preview"
+							id="accessory-image-preview"
 						>
 							{imagePreview ?
 								<img
@@ -205,14 +193,15 @@ const AdminPlayerUpdate: React.FC = () => {
 							className="btn-save"
 							disabled={
 								(image && image.name.split(".").pop() != "webp") ||
-								!playerName.trim() ||
-								!selectedClub
+								!name.trim() ||
+								price < 0 ||
+								!endDate
 							}
 						>
 							Запази промените
 						</button>
 						<Link
-							to="/admin/players"
+							to="/admin/accessories"
 							className="btn-cancel"
 						>
 							Отказ
@@ -224,4 +213,4 @@ const AdminPlayerUpdate: React.FC = () => {
 	);
 };
 
-export default AdminPlayerUpdate;
+export default AdminAccessoryUpdate;

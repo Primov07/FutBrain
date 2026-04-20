@@ -21,7 +21,7 @@ export class AccessoryRepository {
 
 	public async create(accessory: Accessory): Promise<string> {
 		const model: DocumentType<Accessory> = new AccessoryModel(accessory);
-		model.save();
+		await model.save();
 		return model._id.toString();
 	}
 

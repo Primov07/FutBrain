@@ -10,12 +10,7 @@ import { playersUrl, clubsUrl } from "../app";
 	this.playerImg= `${playersUrl}/${this.id}.webp`
 })
 export class Player {
-	/*@prop({
-		default: new Types.ObjectId,
-	})
-	public _id!: Types.ObjectId; */
-
-	@prop({})
+	@prop()
 	public id!: string;
 
 	@prop({

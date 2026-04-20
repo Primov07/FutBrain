@@ -15,11 +15,11 @@ const Profile: React.FC = () => {
       try {
         setLoading(true);
         const response = await fetch(`${BASE_URL}/users/${username}`);
+        const json = await response.json();
         if (!response.ok) {
-          return toast.error('Потребителят не е намерен');
+          return toast.error(json.message);
         }
-        const data = await response.json();
-        setProfileUser(data);
+        setProfileUser(json);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -41,7 +41,7 @@ const Profile: React.FC = () => {
       <div className="profile-grid">
         <div className="profile-card">
           <img 
-            src={profileUser.pictureURL.startsWith('http') ? profileUser.pictureURL : `${import.meta.env.VITE_API_URL}${profileUser.pictureURL.replace('..', '')}`} 
+            src={profileUser.pictureURL.startsWith('http') ? profileUser.pictureURL : `${BASE_URL}${profileUser.pictureURL.replace('..', '')}`} 
             alt={profileUser.username} 
             className="profile-avatar"
             onError={(e) => {

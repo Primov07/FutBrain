@@ -1,7 +1,10 @@
 import express from "express";
-import { accessoryController } from ".";
-import { authenticateToken, restrictToAdmin } from ".";
-import { accessoryUpload } from ".";
+import { accessoryController } from "../controllers";
+import {
+	accessoryUpload,
+	authenticateToken,
+	restrictToAdmin,
+} from "../middlewares";
 
 export const accessoryRouter: express.Router = express.Router();
 
