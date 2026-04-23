@@ -10,7 +10,7 @@ const Home: React.FC = () => {
           <h1>Отключи своя футболен интелект</h1>
           <p>Присъедини се към най-страстната общност от футболни фенове. Обсъждай, анализирай и играй.</p>
           <div className="search-box">
-            <input type="text" placeholder="Търси публикации, играчи, клубове..." />
+            <input type="text" placeholder="Търси публикации..." />
             <button type="submit"><i className="fas fa-search"></i></button>
           </div>
         </div>

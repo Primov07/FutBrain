@@ -82,6 +82,7 @@ export class CommentService {
 			content: comment.content,
 			photos: comment.photos,
 			user: {
+				id: comment.user._id,
 				username: comment.user?.username || "Анонимен",
 				pictureURL: comment.user?.pictureURL || ""
 			},

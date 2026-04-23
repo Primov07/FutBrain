@@ -23,7 +23,7 @@ connect(connectionString);
 export const app: express.Application = express();
 
 const PORT: number = parseInt(process.env.PORT!);
-const BASE_URL: string = `http://localhost:${PORT}`;
+export const BASE_URL: string = `http://localhost:${PORT}`;
 export const clubsUrl: string = `${BASE_URL}/clubs`;
 export const playersUrl: string = `${BASE_URL}/players`;
 export const accessoriesUrl: string = `${BASE_URL}/accessories`;
@@ -39,6 +39,7 @@ app.use(
 );
 
 app.use(express.static(path.resolve(__dirname, "../../view")));
+app.use("/", express.static(path.join(__dirname, "../uploads/")));
 app.use("/clubs", express.static(path.join(__dirname, "../uploads/clubs")));
 app.use("/players", express.static(path.join(__dirname, "../uploads/players")));
 app.use("/accessories", express.static(path.join(__dirname, "../uploads/accessories")));
@@ -87,13 +88,14 @@ app.get(
 	},
 );
 app.get("/logout", (req: express.Request, res: express.Response) => {
-	res.cookie("token", "", {
+	res.clearCookie("token", {
 		httpOnly: true,
-		secure: true, // ако си в production
+		secure: true,
 		sameSite: "strict",
-		expires: new Date(0),
 	});
-})
+
+	res.status(200).json({ message: "Успешно излязохте от профила си!" });
+});
 
 app.use(errorHandler);
 

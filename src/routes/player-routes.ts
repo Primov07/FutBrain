@@ -27,7 +27,7 @@ playerRouter.post(
 playerRouter.post(
 	"/vote",
 	authenticateToken,
-	playerController.getAll.bind(playerController),
+	playerController.vote.bind(playerController),
 );
 
 playerRouter.delete(

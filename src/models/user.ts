@@ -9,11 +9,17 @@ import bcrypt from "bcrypt";
 import { randomUUID, randomInt } from "crypto";
 import { Types } from "mongoose";
 import { usersUrl } from "../app";
+import { AppError } from "../middlewares/error-handler";
 
 @pre<User>("save", async function () {
 	if (this.isModified("passwordHash")) {
-		this.saltRounds = randomInt(1, 11);
-		this.passwordHash = await bcrypt.hash(this.passwordHash, this.saltRounds);
+		const regex : RegExp =
+			/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+		if (regex.test(this.passwordHash)) {
+			this.saltRounds = randomInt(1, 11);
+			this.passwordHash = await bcrypt.hash(this.passwordHash, this.saltRounds);
+		}
+		else throw new AppError("Паролата трябва да бъде дълга поне 8 символа, да съдържа поне една буква, цифра и специален символ!", 400);
 	}
 	if (this.isModified("strikes") && this.strikes == 3) this.isBanned = true;
 })

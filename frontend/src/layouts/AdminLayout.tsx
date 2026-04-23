@@ -57,10 +57,6 @@ const AdminLayout: React.FC = () => {
 
         <main className="admin-main">
           <header className="admin-header">
-            <div className="header-search">
-              <i className="fas fa-search"></i>
-              <input type="text" placeholder="Търси данни..." />
-            </div>
             <div className="admin-profile">
               <span>Добре дошли, <strong>администратор</strong></span>
               <img src="/img/logo.png" alt="Админ" className="admin-avatar" />

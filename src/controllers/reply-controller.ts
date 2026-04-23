@@ -21,6 +21,17 @@ class ReplyController {
 		}
 	}
 
+	public async getCountOnComment(req: Request, res: Response, next: NextFunction) {
+		try {
+			const commentId = req.params.commentId?.toString()!;
+			const count = await this.replyService.getCountOnComment(commentId);
+			res.json({count});
+		}
+		catch (error) {
+			next(error);
+		}
+	}
+
 	public async getAll(req: Request, res: Response, next: NextFunction) {
 		try {
 			const replies: Array<ReplyDTO> | null = await this.replyService.getAll();

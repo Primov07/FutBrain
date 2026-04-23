@@ -5,6 +5,7 @@ type User = {
 	username: string;
 	isAdmin: boolean;
 	pictureURL: string;
+	futcoins: number;
 };
 
 type AuthContextType = {

@@ -22,6 +22,8 @@ import Rankings from "./pages/Rankings";
 import Contacts from "./pages/Contacts";
 import Profile from "./pages/Profile";
 import PostAdd from "./pages/PostAdd";
+import Post from "./pages/Post";
+import PostUpdate from "./pages/PostUpdate";
 import ProtectedRoute from "./auth/ProtectedRoute";
 
 function App() {
@@ -56,6 +58,18 @@ function App() {
 					element={
 						<ProtectedRoute isAdmin={false}>
 							<PostAdd />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="post/:id"
+					element={<Post />}
+				/>
+				<Route
+					path="post/update/:id"
+					element={
+						<ProtectedRoute isAdmin={false}>
+							<PostUpdate />
 						</ProtectedRoute>
 					}
 				/>

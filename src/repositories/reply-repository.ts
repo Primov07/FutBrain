@@ -11,6 +11,7 @@ export class ReplyRepository {
 		const replies: Array<Reply> | null = await ReplyModel.find({
 			comment: new Types.ObjectId(commentId),
 		})
+			.populate("user")
 			.skip(skip)
 			.limit(limit)
 			.sort({ publishDate: -1 })

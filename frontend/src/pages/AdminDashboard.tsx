@@ -33,6 +33,7 @@ const AdminDashboard: React.FC = () => {
 
 	return (
 		<>
+			<title> FutBrain - Admin Panel </title>
 			<h1>Общ преглед на системата</h1>
 			<p className="admin-welcome-text">
 				Добре дошли в административния панел на FutBrain. Тук можете да

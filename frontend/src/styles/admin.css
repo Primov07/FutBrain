@@ -524,6 +524,17 @@
     padding: 10px;
 }
 
+.form-validation-info {
+    font-size: 0.9rem;
+    color: #e74c3c;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #fff5f5;
+    border-radius: 8px;
+    border-left: 4px solid #e74c3c;
+    line-height: 1.4;
+}
+
 /* Responsive Styles for Admin */
 @media (max-width: 1024px) {
     .admin-sidebar {

@@ -6,6 +6,7 @@ export interface PostDTO {
 	likedBy: string[];
 	comments: string[];
 	user: {
+		id: string;
 		username: string;
 		pictureURL: string;
 	};

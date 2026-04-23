@@ -67,6 +67,7 @@ export class PostService {
 			likedBy: post.likedBy?.map((id: any) => id.toString()) || [],
 			comments: post.comments?.map((id: any) => id.toString()) || [],
 			user: {
+				id: post.user?._id?.toString() || post.user?.id?.toString() || "",
 				username: post.user?.username || "Анонимен",
 				pictureURL: post.user?.pictureURL || ""
 			}

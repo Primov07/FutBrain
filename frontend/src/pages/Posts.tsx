@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { PostDTO } from '../dtos/post';
 import type { CommentDTO } from '../dtos/comment';
 import type { ReplyDTO } from '../dtos/reply';
@@ -8,12 +8,10 @@ import { toast } from "react-toastify";
 import { useAuth } from '../auth/AuthContext';
 
 const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
-  const { user } = useAuth();
   const [comments, setComments] = React.useState<CommentDTO[]>([]);
   const [page, setPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(true);
-  const [showForm, setShowForm] = React.useState(false);
-  const [content, setContent] = React.useState('');
+  const navigate = useNavigate();
 
   const fetchComments = async (pageNum: number) => {
     try {
@@ -29,52 +27,25 @@ const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
     }
   };
 
-  const handleCreateComment = async (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!user) return toast.error("Трябва да сте регистрирани!");
-    try {
-      const response = await fetch(`${BASE_URL}/comments`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, user: user.id, post: postId })
-      });
-      if (response.ok) {
-        toast.success("Коментарът е добавен!");
-        setContent('');
-        setShowForm(false);
-        setComments([]);
-        setPage(1);
-        fetchComments(1);
-      }
-      else toast.error("Грешка при коментиране.");
-    } catch (err) {
-      toast.error("Грешка при добавяне");
-    }
-  };
-
   React.useEffect(() => {
     fetchComments(page);
-  }, [page]);
+  }, [page, postId]);
 
   return (
     <div className="comments-section active">
-      {user && (
-        <button className="btn-action" onClick={() => setShowForm(!showForm)}>
-          {showForm ? 'Откажи' : 'Добави коментар'}
+      <div className="section-header">
+        <h4 className="text-primary-blue">Коментари</h4>
+        <button className="btn-action" onClick={() => navigate(`/post/${postId}`)}>
+           Добави коментар
         </button>
-      )}
-      {showForm && (
-        <form className="comment-form" onSubmit={handleCreateComment}>
-          <textarea value={content} onChange={(e) => setContent(e.target.value)} required />
-          <button className="btn-action" type="submit">Изпрати</button>
-        </form>
-      )}
+      </div>
+      
       {comments.map((comment) => (
         <div key={comment.id} className="comment-item">
           <div className="comment-header">
              <div className="comment-user-info">
                <img 
-                 src={comment.user.pictureURL?.startsWith('http') ? comment.user.pictureURL : `${BASE_URL}/uploads/user.png`} 
+                 src={comment.user.pictureURL?.startsWith('http') ? comment.user.pictureURL : `${BASE_URL}/user.png`} 
                  alt={comment.user.username} 
                  className="comment-avatar"
                  onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
@@ -86,53 +57,29 @@ const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
              </span>
           </div>
           <p className="comment-text">{comment.content}</p>
-          <ReplySection commentId={comment.id} />
+          <ReplySection commentId={comment.id} postId={postId} />
         </div>
       ))}
-      {hasMore && <button className="btn-action" onClick={() => setPage(p => p + 1)}>Още коментари</button>}
+      {hasMore && <button className="btn-action mt-15" onClick={() => setPage(p => p + 1)}>Още коментари</button>}
     </div>
   );
 };
 
-const ReplySection: React.FC<{ commentId: string }> = ({ commentId }) => {
-  const { user } = useAuth();
+const ReplySection: React.FC<{ commentId: string; postId: string }> = ({ commentId, postId }) => {
   const [replies, setReplies] = React.useState<ReplyDTO[]>([]);
   const [page, setPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(true);
   const [show, setShow] = React.useState(false);
-  const [showForm, setShowForm] = React.useState(false);
-  const [content, setContent] = React.useState('');
+  const navigate = useNavigate();
 
   const fetchReplies = async (pageNum: number) => {
     try {
       const response = await fetch(`${BASE_URL}/replies/comment/${commentId}?page=${pageNum}`);
       const data: ReplyDTO[] = await response.json();
       if (data.length < 5) setHasMore(false);
-      setReplies((prev) => [...prev, ...data]);
+      setReplies((prev) => pageNum === 1 ? data : [...prev, ...data]);
     } catch (err) {
       toast.error("Грешка при зареждане на отговорите");
-    }
-  };
-
-  const handleCreateReply = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) return toast.error("Трябва да сте регистрирани!");
-    try {
-      const response = await fetch(`${BASE_URL}/replies`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, user: user.id, comment: commentId })
-      });
-      if (response.ok) {
-        toast.success("Отговорът е добавен!");
-        setContent('');
-        setShowForm(false);
-        setReplies([]);
-        setPage(1);
-        fetchReplies(1);
-      }
-    } catch (err) {
-      toast.error("Грешка при добавяне");
     }
   };
 
@@ -143,19 +90,24 @@ const ReplySection: React.FC<{ commentId: string }> = ({ commentId }) => {
 
   return (
     <div className="replies-section">
-      <button className="btn-action" onClick={toggle}>Отговори ({replies.length})</button>
-      {user && <button className="btn-action" onClick={() => setShowForm(!showForm)}>{showForm ? 'Откажи' : 'Отговори'}</button>}
-      {showForm && (
-        <form className="comment-form" onSubmit={handleCreateReply}>
-          <textarea value={content} onChange={(e) => setContent(e.target.value)} required />
-          <button className="btn-action" type="submit">Изпрати</button>
-        </form>
-      )}
+      <div className="reply-actions">
+        <button className="btn-toggle-comments" onClick={toggle}>
+          <i className="far fa-comment"></i> Отговори
+        </button>
+        <button className="btn-toggle-comments" onClick={() => navigate(`/post/${postId}?replyTo=${commentId}`)}>
+           <i className="fas fa-reply"></i>
+        </button>
+      </div>
+      
       {show && (
-        <>
-          {replies.map((reply) => <div key={reply.id} className="reply">{reply.content}</div>)}
+        <div className="replies-list" style={{ marginLeft: '20px', borderLeft: '1px solid #ddd', paddingLeft: '10px' }}>
+          {replies.map((reply) => (
+            <div key={reply.id} className="reply-item mb-10">
+               <p className="comment-text" style={{ fontSize: '0.85rem' }}>{reply.content}</p>
+            </div>
+          ))}
           {hasMore && <button className="btn-action" onClick={() => setPage(p => p + 1)}>Още отговори</button>}
-        </>
+        </div>
       )}
     </div>
   );
@@ -166,6 +118,8 @@ const Posts: React.FC = () => {
   const [posts, setPosts] = React.useState<PostDTO[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [showComments, setShowComments] = React.useState<Record<string, boolean>>({});
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const navigate = useNavigate();
 
   const postsUrl = `${BASE_URL}/posts`;
 
@@ -183,6 +137,11 @@ const Posts: React.FC = () => {
     setShowComments((prev) => ({ ...prev, [postId]: !prev[postId] }));
   };
 
+  const filteredPosts = posts.filter(post => 
+    post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    post.user.username.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <title>Публикации – FutBrain</title>
@@ -197,33 +156,56 @@ const Posts: React.FC = () => {
         </div>
       </section>
 
+      <div className="search-box mb-10 w-full">
+        <input 
+          type="text" 
+          placeholder="Търси в публикациите..." 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button type="button"><i className="fas fa-search"></i></button>
+      </div>
+
       <div className="posts-grid">
         {isLoading ? (
           <div className="admin-content">Зареждане...</div>
-        ) : posts.map((post) => (
-          <article key={post.id} className="post-card">
-            <div className="post-header">
-              <img 
-                src={post.user.pictureURL.startsWith('http') ? post.user.pictureURL : `${BASE_URL}/uploads/user.png`} 
-                alt={post.user.username} 
-                className="user-avatar"
-                onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
-              />
-              <span className="user-name">{post.user.username}</span>
-              <span className="post-date">{new Date(post.publishDate).toLocaleDateString('bg-BG')}</span>
-            </div>
-            <div className="post-body">
-              <p>{post.content}</p>
-            </div>
-            <div className="post-footer">
-              <span><i className="far fa-thumbs-up"></i> {post.likedBy.length} харесвания</span>
-              <button className="btn-toggle-comments" onClick={() => toggleComments(post.id)}>
-                <i className="far fa-comment"></i> {post.comments.length} коментара
-              </button>
-            </div>
-            {showComments[post.id] && <CommentSection postId={post.id} />}
-          </article>
-        ))}
+        ) : filteredPosts.length > 0 ? (
+          filteredPosts.map((post) => (
+            <article key={post.id} className="post-card">
+              <div className="post-header" onClick={() => navigate(`/post/${post.id}`)} style={{ cursor: 'pointer' }}>
+                <img 
+                  src={post.user.pictureURL?.startsWith('http') ? post.user.pictureURL : `${BASE_URL}/uploads/user.png`} 
+                  alt={post.user.username} 
+                  className="user-avatar"
+                  onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
+                />
+                <span className="user-name">{post.user.username}</span>
+                <span className="post-date">{new Date(post.publishDate).toLocaleDateString('bg-BG')}</span>
+              </div>
+              <div className="post-body" onClick={() => navigate(`/post/${post.id}`)} style={{ cursor: 'pointer' }}>
+                <h3 className="text-primary-blue mb-10">{post.title}</h3>
+                <p>{post.content.length > 200 ? post.content.substring(0, 200) + '...' : post.content}</p>
+              </div>
+              <div className="post-footer">
+                <span><i className="far fa-thumbs-up"></i> {post.likedBy.length} харесвания</span>
+                <button className="btn-toggle-comments" onClick={() => toggleComments(post.id)}>
+                  <i className="far fa-comment"></i> {post.comments.length} коментара
+                </button>
+                {user?.id === post.user.id && (
+                  <Link to={`/post/update/${post.id}`} className="btn-edit-header" title="Редактирай">
+                    <i className="fas fa-edit"></i>
+                  </Link>
+                )}
+                <Link to={`/post/${post.id}`} className="view-all" style={{ fontSize: '0.9rem' }}>
+                   Виж целия пост <i className="fas fa-external-link-alt"></i>
+                </Link>
+              </div>
+              {showComments[post.id] && <CommentSection postId={post.id} />}
+            </article>
+          ))
+        ) : (
+          <p className="no-results-msg">Няма намерени публикации.</p>
+        )}
       </div>
     </>
   );

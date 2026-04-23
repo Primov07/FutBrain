@@ -34,20 +34,35 @@ class PlayerController {
 	}
 
 	public async create(req: Request, res: Response, next: NextFunction) {
+		const safeRename = (oldPath: string, newPath: string) => {
+			try {
+				fs.renameSync(oldPath, newPath);
+			} catch {
+				throw new AppError("Грешка при запазване на снимката", 500);
+			}
+		};
+
+		const safeCreate = async (dto: CreatePlayerDTO) => {
+			try {
+				const id: string = await this.playerService.create(dto);
+				return id;
+			} catch (err) {
+				throw new AppError("Грешка при валидацията на играча!", 500);
+			}
+		};
 		try {
 			const playerDTO: CreatePlayerDTO = {
 				name: req.body.playerName,
 				club: req.body.club,
 			};
-			const id: string = await this.playerService.create(playerDTO);
+			const id: string = await safeCreate(playerDTO);
 			if (!req.file) throw new AppError("Играчът трябва да има снимка", 400);
 			const oldPath: string = `uploads/players/${req.file?.filename!}`;
 			const newPath: string = `uploads/players/${id}.webp`;
-			fs.rename(oldPath, newPath, (err) => {
-				if (err) throw new AppError("Грешка при запазване на снимката", 500);
-			});
+			safeRename(oldPath, newPath);
 			res.status(201).json({ message: "Играчът е създаден успешно!" });
 		} catch (err) {
+			if (req.file) fs.unlinkSync(req.file.path);
 			next(err);
 		}
 	}
@@ -67,7 +82,7 @@ class PlayerController {
 		}
 	}
 
-public async getCount(req: Request, res: Response, next: NextFunction) {
+	public async getCount(req: Request, res: Response, next: NextFunction) {
 		try {
 			const players: Array<PlayerDTO> | null =
 				await this.playerService.getAll();
@@ -79,34 +94,56 @@ public async getCount(req: Request, res: Response, next: NextFunction) {
 	}
 
 	public async update(req: Request, res: Response, next: NextFunction) {
+		const safeRename = (oldPath: string, newPath: string) => {
+			try {
+				fs.renameSync(oldPath, newPath);
+			} catch {
+				throw new AppError("Грешка при запазване на снимката", 500);
+			}
+		};
+
+		const safeUpdate = async (dto: UpdatePlayerDTO) => {
+			try {
+				return await this.playerService.update(dto);
+			} catch (err) {
+				throw new AppError("Грешка при валидацията на играча!", 500);
+			}
+		};
+
+		const safeDelete = (path: string) => {
+			try {
+				fs.unlinkSync(path);
+			} catch (err) {
+				throw new AppError("Грешка при изтриването на старата снимка!", 500);
+			}
+		};
+
+		let path: string = "";
+		let oldPath: string = "";
 		try {
 			const player: UpdatePlayerDTO = {
 				id: req.body.id,
 				name: req.body.playerName,
 				club: req.body.club,
 			};
-			const updated: void | null = await this.playerService.update(player);
+			const updated: void | null = await safeUpdate(player);
 			if (updated === null) throw new AppError("Играчът не е намерен", 404);
 			if (req.file) {
-				const path: string = `uploads/players/${player.id}.webp`;
-				try {
-					fs.unlinkSync(path);
-				} catch (err) {
-					throw new AppError((err as any).message, 500);
-				}
-
-				const oldPath: string = `uploads/players/${req.file?.filename!}`;
-				fs.rename(oldPath, path, (err) => {
-					if (err)
-						throw new AppError(
-							"Грешка при обработката на снимката на играча!",
-							500,
-						);
-				});
+				path = `uploads/players/${player.id}.webp`;
+				oldPath = `uploads/players/${req.file?.filename!}`;
 			}
 			res.status(201).json({ message: "Играчът е актуализиран успешно!" });
 		} catch (error) {
-			next(error);
+			if (req.file) fs.unlinkSync(req.file.path);
+			return next(error);
+		}
+
+		try {
+			safeDelete(path);
+			safeRename(oldPath, path);
+		} catch (err) {
+			const appError: AppError = new AppError((err as any).message, 500);
+			next(appError);
 		}
 	}
 

@@ -71,6 +71,7 @@ class UserController {
 					username: user.username,
 					isAdmin: user.isAdmin,
 					pictureURL: user.pictureURL,
+					futcoins: user.futcoins
 				},
 				process.env.SECRET_KEY!.toString()
 			);
@@ -90,6 +91,7 @@ class UserController {
 						username: user.username,
 						isAdmin: user.isAdmin,
 						pictureURL: user.pictureURL,
+						futcoins: user.futcoins
 					},
 				});
 		} catch (error) {

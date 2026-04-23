@@ -11,9 +11,10 @@ const UserLayout: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}/logout`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/logout`, {
         credentials: "include",
       });
+      
       setUser(null);
       setIsMenuOpen(false);
       navigate('/');
@@ -82,9 +83,14 @@ const UserLayout: React.FC = () => {
                   />
                   <div className="user-details-header">
                     <span className="username-header">{user.username}</span>
-                    <span className="user-role-header">
-                      {user.isAdmin ? 'Администратор' : 'Потребител'}
-                    </span>
+                    <div className="user-meta-header">
+                      <span className="user-role-header">
+                        {user.isAdmin ? 'Администратор' : 'Потребител'}
+                      </span>
+                      <span className="user-coins-header">
+                        <i className="fas fa-coins"></i> {user.futcoins} FC
+                      </span>
+                    </div>
                   </div>
                 </div>
                 
