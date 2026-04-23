@@ -149,8 +149,19 @@ class PlayerController {
 
 	public async vote(req: Request, res: Response, next: NextFunction) {
 		try {
-			this.voteService.handleVote(req.body.playerId, req.body.userId);
+			await this.voteService.handleVote(req.body.playerId, req.body.userId);
 			res.status(201).json({ message: "Гласуването беше успешно!" });
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	public async getVote(req: Request, res: Response, next: NextFunction) {
+		try {
+			const userId = (req as any).user.id;
+			const playerId = await this.voteService.getUserVote(userId);
+			if (!playerId) throw new AppError("Потребителят няма глас", 404);
+			res.json({ playerId });
 		} catch (err) {
 			next(err);
 		}

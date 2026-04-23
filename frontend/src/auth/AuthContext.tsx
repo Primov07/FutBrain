@@ -21,14 +21,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		fetch(`${import.meta.env.VITE_API_URL}/me`, {
+		fetch(`${import.meta.env.VITE_API_URL}/users/me`, {
 			credentials: "include",
 		})
 			.then((res) => {
 				if (!res.ok) throw new Error();
 				return res.json();
 			})
-			.then((data) => setUser(data))
+			.then((data) => setUser(data.user))
 			.catch(() => setUser(null))
 			.finally(() => setLoading(false));
 	}, []);

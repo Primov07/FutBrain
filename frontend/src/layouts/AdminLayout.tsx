@@ -1,8 +1,11 @@
 import React from 'react';
 import { NavLink, Outlet, Link } from 'react-router-dom';
 import '../styles/admin.css';
+import { useAuth } from '../auth/AuthContext';
+import { BASE_URL } from '../pages';
 
 const AdminLayout: React.FC = () => {
+  const { user } = useAuth();
   return (
     <div className="admin-body">
       <div className="admin-wrapper">
@@ -58,8 +61,8 @@ const AdminLayout: React.FC = () => {
         <main className="admin-main">
           <header className="admin-header">
             <div className="admin-profile">
-              <span>Добре дошли, <strong>администратор</strong></span>
-              <img src="/img/logo.png" alt="Админ" className="admin-avatar" />
+              <span>Добре дошли, <strong>{ user?.username}</strong></span>
+              <img src={user?.pictureURL?.startsWith('http') ? user.pictureURL : `${BASE_URL}/user.png`} alt="Админ" className="admin-avatar" />
             </div>
           </header>
 

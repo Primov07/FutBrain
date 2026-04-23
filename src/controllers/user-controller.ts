@@ -3,6 +3,8 @@ import { UserService } from ".";
 import { UserDTO, CreateUserDTO, UpdateUserDTO } from "../dtos/user";
 import { AppError } from "../middlewares/error-handler";
 import jwt from "jsonwebtoken";
+import fs from "fs";
+import { BASE_URL } from "../app";
 
 class UserController {
 	constructor(private readonly userService: UserService) {}
@@ -30,7 +32,8 @@ class UserController {
 	public async create(req: Request, res: Response) {
 		const user: CreateUserDTO = req.body;
 		const result = await this.userService.create(user);
-		if (!result) throw new AppError("Това потребителско име вече съществува!", 422);
+		if (!result)
+			throw new AppError("Това потребителско име вече съществува!", 422);
 		res.status(201).json({ message: "User created successfully" });
 	}
 
@@ -54,6 +57,22 @@ class UserController {
 		}
 	}
 
+	public async upload(req: Request, res: Response, next: NextFunction) {
+		if (req.file)
+		{
+			const id = (req as any).user?.id;
+			const oldPath: string = `uploads/users/${req.file?.filename!}`;
+			const newPath: string = `uploads/users/${id}.webp`;
+			try {
+				fs.renameSync(oldPath, newPath);
+				res.json({ message: "Профилната снимка е качена успешно!" });
+			} catch (err) {
+				console.error("DEBUG ERROR:", err);
+				throw new AppError("Грешка при запазване на снимката", 500);
+			}
+		}
+	}
+
 	public async authenticate(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { username, password } = req.body;
@@ -71,9 +90,9 @@ class UserController {
 					username: user.username,
 					isAdmin: user.isAdmin,
 					pictureURL: user.pictureURL,
-					futcoins: user.futcoins
+					futcoins: user.futcoins,
 				},
-				process.env.SECRET_KEY!.toString()
+				process.env.SECRET_KEY!.toString(),
 			);
 
 			res
@@ -91,7 +110,7 @@ class UserController {
 						username: user.username,
 						isAdmin: user.isAdmin,
 						pictureURL: user.pictureURL,
-						futcoins: user.futcoins
+						futcoins: user.futcoins,
 					},
 				});
 		} catch (error) {
@@ -99,19 +118,55 @@ class UserController {
 		}
 	}
 
-	public async getCount(req: Request, res: Response, next: NextFunction)
-		{
-			try {
-				const users: Array<UserDTO> | null =
-					await this.userService.getAll();
-				if (!users) res.json({count: 0});
-				else res.json({ count: users.length });
-			}
-			catch (err)
-			{
-				next(err);
-			}
-		} 
+	public async getCurrentUser(req: Request, res: Response, next: NextFunction) {
+		try {
+			const id = (req as any).user?.id;
+			const user: UserDTO | null = await this.userService.getById(id);
+
+			if (!user) throw new AppError("Потребителят не е намерен!", 404);
+
+			const newToken = jwt.sign(
+				{
+					id: user.id,
+					username: user.username,
+					isAdmin: user.isAdmin,
+					pictureURL: user.pictureURL,
+					futcoins: user.futcoins,
+				},
+				process.env.SECRET_KEY!.toString(),
+			);
+			res
+				.cookie("token", newToken, {
+					httpOnly: true,
+					secure: true,
+					sameSite: "strict",
+				})
+				.status(200)
+				.json({
+					message: "Успешен вход!",
+					token: newToken,
+					user: {
+						id: user.id,
+						username: user.username,
+						isAdmin: user.isAdmin,
+						pictureURL: user.pictureURL,
+						futcoins: user.futcoins,
+					},
+				});
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	public async getCount(req: Request, res: Response, next: NextFunction) {
+		try {
+			const users: Array<UserDTO> | null = await this.userService.getAll();
+			if (!users) res.json({ count: 0 });
+			else res.json({ count: users.length });
+		} catch (err) {
+			next(err);
+		}
+	}
 	public async getByUsername(req: Request, res: Response, next: NextFunction) {
 		try {
 			const username: string = req.params.username!.toString();
@@ -125,5 +180,5 @@ class UserController {
 }
 
 export const userController: UserController = new UserController(
-	new UserService()
+	new UserService(),
 );

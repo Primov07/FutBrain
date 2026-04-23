@@ -174,12 +174,12 @@ const Posts: React.FC = () => {
             <article key={post.id} className="post-card">
               <div className="post-header" onClick={() => navigate(`/post/${post.id}`)} style={{ cursor: 'pointer' }}>
                 <img 
-                  src={post.user.pictureURL?.startsWith('http') ? post.user.pictureURL : `${BASE_URL}/uploads/user.png`} 
+                  src={post.user.pictureURL?.startsWith('http') ? post.user.pictureURL : `${BASE_URL}/user.png`} 
                   alt={post.user.username} 
                   className="user-avatar"
                   onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
                 />
-                <span className="user-name">{post.user.username}</span>
+                <Link to={`/profile/${post.user.username}`} className="user-name">{post.user.username}</Link>
                 <span className="post-date">{new Date(post.publishDate).toLocaleDateString('bg-BG')}</span>
               </div>
               <div className="post-body" onClick={() => navigate(`/post/${post.id}`)} style={{ cursor: 'pointer' }}>

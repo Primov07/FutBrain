@@ -6,6 +6,7 @@ export const postRouter: express.Router = express.Router();
 
 postRouter.get("/", postController.getAll.bind(postController));
 postRouter.get("/:id", postController.getById.bind(postController));
+postRouter.get("/user/:username", postController.getPostsByUser.bind(postController));
 postRouter.post(
 	"/",
 	authenticateToken,

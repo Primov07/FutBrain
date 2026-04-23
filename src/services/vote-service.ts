@@ -22,4 +22,11 @@ export class VoteService {
 		this.userRepository.update(user);
 		this.playerRepository.update(player);
 	}
+
+	public async getUserVote(userId: string) {
+		const user: User | null = await this.userRepository.getById(userId);
+		if (!user || !user.preferredPlayer) return null;
+
+		return user.preferredPlayer.toString();
+	}
 }

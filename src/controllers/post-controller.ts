@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { PostService } from "../services/post-service";
-import { PostDTO, CreatePostDTO, UpdatePostDTO } from "../dtos";
+import { PostDTO, CreatePostDTO, UpdatePostDTO, CommentDTO } from "../dtos";
 import { AppError } from "../middlewares/error-handler";
 import { LikeService } from "../services/like-service";
 
@@ -55,6 +55,34 @@ class PostController {
 			const ifDeleted: boolean = await this.postService.deleteById(id);
 			if (!ifDeleted) throw new AppError("Публикацията не е намерена", 404);
 			res.status(200).json({ message: "Публикацията е изтрита успешно!" });
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	public async getComments(req: Request, res: Response, next: NextFunction) {
+		try {
+			const postId: string = req.params.id!.toString();
+			const comments: Array<CommentDTO> | null = await this.postService.getComments(postId);
+			if (!comments) {
+				throw new AppError("Няма намерени коментари за тази публикация", 404);
+			}
+			res.json(comments);
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	public async getPostsByUser(req: Request, res: Response, next: NextFunction) {
+		try {
+			const username: string = req.params.username!.toString();
+			const page = parseInt(req.query.page as string) || 1;
+			const limit = parseInt(req.query.limit as string) || 10;
+			const posts: Array<PostDTO> | null = await this.postService.getPostsByUser(username, page, limit);
+			if (!posts) {
+				throw new AppError("Няма намерени публикации за този потребител", 404);
+			}
+			res.json(posts);
 		} catch (error) {
 			next(error);
 		}

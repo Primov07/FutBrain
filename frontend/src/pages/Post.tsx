@@ -9,50 +9,24 @@ import { useAuth } from '../auth/AuthContext';
 
 const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
   const { user } = useAuth();
-  const [searchParams] = useSearchParams();
-  const replyToId = searchParams.get('replyTo');
-  
   const [comments, setComments] = React.useState<CommentDTO[]>([]);
   const [page, setPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(true);
   const [showForm, setShowForm] = React.useState(false);
   const [content, setContent] = React.useState('');
-  const [targetComment, setTargetComment] = React.useState<CommentDTO | null>(null);
 
   const fetchComments = async (pageNum: number) => {
     try {
-      const response = await fetch(`${BASE_URL}/comments/post/${postId}?page=${pageNum}`);
+      const response = await fetch(`${BASE_URL}/comments/post/${postId}?page=${pageNum}&limit=5`);
       const data: CommentDTO[] = await response.json();
       
       if (data.length < 5) setHasMore(false);
       
-      setComments((prev) => {
-        // Филтрираме коментарите, за да не се дублира target коментара, ако случайно е на същата страница
-        const filteredData = replyToId ? data.filter(c => c.id !== replyToId) : data;
-        return pageNum === 1 ? filteredData : [...prev, ...filteredData];
-      });
+      setComments((prev) => pageNum === 1 ? data : [...prev, ...data]);
     } catch (err) {
       toast.error("Грешка при зареждане на коментарите");
     }
   };
-
-  // Специален ефект за извличане на целевия коментар (ReplyTo)
-  React.useEffect(() => {
-    const fetchTargetComment = async () => {
-      if (!replyToId) return;
-      try {
-        const response = await fetch(`${BASE_URL}/comments/${replyToId}`);
-        if (response.ok) {
-          const data: CommentDTO = await response.json();
-          setTargetComment(data);
-        }
-      } catch (err) {
-        console.error("Грешка при извличане на целевия коментар");
-      }
-    };
-
-    fetchTargetComment();
-  }, [replyToId]);
 
   const handleCreateComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +43,6 @@ const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
         setContent('');
         setShowForm(false);
         setComments([]);
-        setTargetComment(null); // Нулираме target коментара при нов общ коментар
         setPage(1);
         fetchComments(1);
       }
@@ -82,9 +55,6 @@ const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
   React.useEffect(() => {
     fetchComments(page);
   }, [page, postId]);
-
-  // Обединяваме target коментара с останалите
-  const allComments = targetComment ? [targetComment, ...comments] : comments;
 
   return (
     <div className="comments-section active">
@@ -110,24 +80,24 @@ const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
       )}
       
       <div className="comments-list">
-        {allComments.map((comment) => (
-          <div key={comment.id} className={`comment-item ${replyToId === comment.id ? 'highlighted-comment' : ''}`}>
+        {comments.map((comment) => (
+          <div key={comment.id} className="comment-item">
             <div className="comment-header">
                <div className="comment-user-info">
                  <img 
-                   src={comment.user.pictureURL?.startsWith('http') ? comment.user.pictureURL : `${BASE_URL}/uploads/user.png`} 
+                   src={comment.user.pictureURL?.startsWith('http') ? comment.user.pictureURL : `${BASE_URL}/user.png`} 
                    alt={comment.user.username} 
                    className="comment-avatar"
                    onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
                  />
-                 <span className="comment-username" style={{ marginRight: '15px' }}>{comment.user.username}</span>
+                 <Link to={`/profile/${comment.user.username}`} className="comment-username" style={{ marginRight: '15px' }}>{comment.user.username}</Link>
                </div>
                <span className="comment-date">
                  {new Date(comment.publishDate).toLocaleDateString('bg-BG')}
                </span>
             </div>
             <p className="comment-text">{comment.content}</p>
-            <ReplySection commentId={comment.id} autoOpen={replyToId === comment.id} />
+            <ReplySection commentId={comment.id} />
           </div>
         ))}
       </div>
@@ -136,30 +106,20 @@ const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
   );
 };
 
-const ReplySection: React.FC<{ commentId: string; autoOpen?: boolean }> = ({ commentId, autoOpen }) => {
+const ReplySection: React.FC<{ commentId: string }> = ({ commentId }) => {
   const { user } = useAuth();
   const [replies, setReplies] = React.useState<ReplyDTO[]>([]);
   const [page, setPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(true);
   const [show, setShow] = React.useState(false);
-  const [showForm, setShowForm] = React.useState(autoOpen || false);
+  const [showForm, setShowForm] = React.useState(false);
   const [content, setContent] = React.useState('');
-
-  React.useEffect(() => {
-    if (autoOpen) {
-      setShowForm(true);
-      setShow(true); 
-      if (replies.length === 0) {
-        fetchReplies(1);
-      }
-    }
-  }, [autoOpen]);
 
   const fetchReplies = async (pageNum: number) => {
     try {
-      const response = await fetch(`${BASE_URL}/replies/comment/${commentId}?page=${pageNum}`);
+      const response = await fetch(`${BASE_URL}/replies/comment/${commentId}?page=${pageNum}&limit=5`);
       const data: ReplyDTO[] = await response.json();
-      if (data.length <= 5) setHasMore(false);
+      if (data.length < 5) setHasMore(false);
       setReplies((prev) => pageNum === 1 ? data : [...prev, ...data]);
     } catch (err) {
       toast.error("Грешка при зареждане на отговорите");
@@ -171,6 +131,7 @@ const ReplySection: React.FC<{ commentId: string; autoOpen?: boolean }> = ({ com
     if (!user) return toast.error("Трябва да сте регистрирани!");
     try {
       const response = await fetch(`${BASE_URL}/replies`, {
+        credentials: "include",
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content, user: user.id, comment: commentId })
@@ -197,7 +158,7 @@ const ReplySection: React.FC<{ commentId: string; autoOpen?: boolean }> = ({ com
     <div className="replies-section">
       <div className="reply-actions">
         <button className="btn-toggle-comments" onClick={toggle}>
-          <i className="far fa-comment"></i> Отговори
+          <i className="far fa-comment"></i> Отговори ({replies.length})
         </button>
         {user && (
           <button className="btn-toggle-comments" onClick={() => setShowForm(!showForm)}>
@@ -225,13 +186,13 @@ const ReplySection: React.FC<{ commentId: string; autoOpen?: boolean }> = ({ com
                <div className="comment-header">
                  <div className="comment-user-info">
                    <img 
-                     src={reply.user.pictureURL?.startsWith('http') ? reply.user.pictureURL : `${BASE_URL}/uploads/user.png`} 
+                     src={reply.user.pictureURL?.startsWith('http') ? reply.user.pictureURL : `${BASE_URL}/user.png`} 
                      alt={reply.user.username} 
                      className="comment-avatar"
                      style={{ width: '25px', height: '25px' }}
                      onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
                    />
-                   <span className="comment-username" style={{ fontSize: '0.85rem', marginRight: '10px' }}>{reply.user.username}</span>
+                   <Link to={`/profile/${reply.user.username}`} className="comment-username" style={{ fontSize: '0.85rem', marginRight: '10px' }}>{reply.user.username}</Link>
                  </div>
                  <span className="comment-date" style={{ fontSize: '0.75rem' }}>
                    {new Date(reply.publishDate).toLocaleDateString('bg-BG')}
@@ -277,13 +238,13 @@ const Post: React.FC = () => {
       <article className="post-card" style={{ maxWidth: '800px', margin: '0 auto' }}>
         <div className="post-header">
           <img 
-            src={post.user.pictureURL?.startsWith('http') ? post.user.pictureURL : `${BASE_URL}/uploads/user.png`} 
+            src={post.user.pictureURL?.startsWith('http') ? post.user.pictureURL : `${BASE_URL}/user.png`} 
             alt={post.user.username} 
             className="user-avatar"
             onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
           />
           <div className="user-info">
-            <span className="user-name" style={{ fontSize: '1.1rem', marginRight: '20px' }}>{post.user.username}</span>
+            <Link to={`/profile/${post.user.username}`} className="user-name" style={{ fontSize: '1.1rem', marginRight: '20px' }}>{post.user.username}</Link>
             <span className="post-date">{new Date(post.publishDate).toLocaleDateString('bg-BG')}</span>
           </div>
         </div>

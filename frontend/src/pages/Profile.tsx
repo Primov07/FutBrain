@@ -1,39 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 //import '../styles/user.css';
 import { toast } from "react-toastify";
 import { BASE_URL } from '.';
+import { useAuth } from '../auth/AuthContext';
 
 const Profile: React.FC = () => {
   const { username } = useParams<{ username: string }>();
+  const { user: currentUser } = useAuth();
   const [profileUser, setProfileUser] = useState<any>(null);
+  const [posts, setPosts] = useState<any[]>([]); // To store fetched posts
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const postsPerPage = 5;
+
+  const isOwnProfile = currentUser?.username === username;
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfileAndPosts = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${BASE_URL}/users/${username}`);
-        const json = await response.json();
-        if (!response.ok) {
-          return toast.error(json.message);
+        
+        const responseUser = await fetch(`${BASE_URL}/users/${username}`);
+        const jsonUser = await responseUser.json();
+        if (!responseUser.ok) {
+          throw new Error(jsonUser.message || "Неуспешно зареждане на потребителски данни.");
         }
-        setProfileUser(json);
+        setProfileUser(jsonUser);
+
+        const responsePosts = await fetch(`${BASE_URL}/posts/user/${username}?page=${page}&limit=${postsPerPage}`);
+        const jsonPosts = await responsePosts.json();
+        console.log(jsonPosts);
+        if (!responsePosts.ok) {
+          throw new Error(jsonPosts.message || "Неуспешно зареждане на публикации.");
+        }
+        setPosts(jsonPosts);
+        if (jsonPosts.length < postsPerPage) {
+          setHasMore(false);
+        }
       } catch (err: any) {
-        setError(err.message);
+        toast.error(err.message);
       } finally {
         setLoading(false);
       }
     };
 
     if (username) {
-      fetchProfile();
+      fetchProfileAndPosts();
     }
-  }, [username]);
+  }, [username, page]); // Re-fetch when page changes or username changes
+
+  const loadMorePosts = () => {
+    setPage(prevPage => prevPage + 1);
+  };
 
   if (loading) return <div className="text-center mt-40 text-white">Зареждане...</div>;
-  if (error) return <div className="text-center mt-40 text-white">Грешка: {error}</div>;
   if (!profileUser) return <div className="text-center mt-40 text-white">Потребителят не съществува.</div>;
 
   return (
@@ -41,13 +63,41 @@ const Profile: React.FC = () => {
       <div className="profile-grid">
         <div className="profile-card">
           <img 
-            src={profileUser.pictureURL.startsWith('http') ? profileUser.pictureURL : `${BASE_URL}${profileUser.pictureURL.replace('..', '')}`} 
+            src={profileUser.pictureURL?.startsWith('http') ? profileUser.pictureURL : `${BASE_URL}/user.png`} 
             alt={profileUser.username} 
             className="profile-avatar"
             onError={(e) => {
-                (e.target as HTMLImageElement).src = '/img/logo.png';
+                (e.target as HTMLImageElement).src = '/img/logo.png'; 
             }}
           />
+          {isOwnProfile && (
+            <>
+              <input
+                type="file"
+                id="avatar-upload"
+                accept="image/*"
+                name="avatar"
+                style={{ display: 'none' }}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const formData = new FormData();
+                    formData.append("avatar", file);
+                    const response = await fetch(`${BASE_URL}/users/profile`, {
+                      credentials: "include",
+                      method: 'PUT',
+                      body: formData
+                    });
+
+                  }
+
+                }}
+              />
+              <button className="btn-action mt-10" onClick={() => document.getElementById('avatar-upload')?.click()}>
+                Смени снимката
+              </button>
+            </>
+          )}
           <h2 className="text-primary-blue">{profileUser.username}</h2>
           <p className="user-role-header">{profileUser.isAdmin ? 'Администратор' : 'Потребител'}</p>
           
@@ -83,16 +133,27 @@ const Profile: React.FC = () => {
           <div className="profile-section mt-40">
             <h3 className="section-title">Публикации</h3>
             <div className="posts-list">
-              {profileUser.posts && profileUser.posts.length > 0 ? (
-                profileUser.posts.map((post: any, index: number) => (
+              {posts.length > 0 ? (
+                posts.map((post: any, index: number) => (
                   <div key={index} className="post-card mb-10">
-                    <p>{typeof post === 'string' ? "Публикация ID: " + post : post.content}</p>
+                     
+                     <Link to={`/post/${post.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <h4 className="text-primary-blue mb-5">{post.title}</h4> {/* Display post title */}
+                        <p className="font-small">{post.content.length > 150 ? post.content.substring(0, 150) + '...' : post.content}</p>
+                     </Link>
                   </div>
                 ))
               ) : (
                 <p className="text-light">Няма налични публикации.</p>
               )}
             </div>
+            {hasMore && (
+              <div className="text-center mt-20">
+                <button className="btn-action" onClick={loadMorePosts}>
+                  Още публикации
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -44,7 +44,7 @@ export class UserService {
 		newUser.username = user.username!;
 		newUser.passwordHash = user.password!;
 		newUser.email = user.email!;
-		newUser.pictureURL = user.pictureURL;
+		newUser.pictureURL = user.pictureURL!;
 
 		const result: void | null = await this.userRepository.update(newUser);
 		return result;

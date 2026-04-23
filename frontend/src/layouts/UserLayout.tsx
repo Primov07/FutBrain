@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import '../styles/user.css';
+import { BASE_URL } from '../pages';
 
 const UserLayout: React.FC = () => {
   const location = useLocation();
@@ -74,7 +75,7 @@ const UserLayout: React.FC = () => {
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   <img 
-                    src={user.pictureURL.startsWith('http') ? user.pictureURL : `${import.meta.env.VITE_API_URL}${user.pictureURL.replace('..', '')}`} 
+                    src={user.pictureURL.startsWith('http') ? user.pictureURL : `${BASE_URL}/user.png`} 
                     alt={user.username} 
                     className="user-avatar-header" 
                     onError={(e) => {

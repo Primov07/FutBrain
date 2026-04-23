@@ -43,6 +43,7 @@ export class PlayerRepository {
 
 		found.name = player.name;
 		found.club = player.club;
+		found.users = player.users;
 		
 		found.save();
 	}

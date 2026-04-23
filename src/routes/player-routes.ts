@@ -30,6 +30,12 @@ playerRouter.post(
 	playerController.vote.bind(playerController),
 );
 
+playerRouter.get(
+	"/vote/me",
+	authenticateToken,
+	playerController.getVote.bind(playerController),
+);
+
 playerRouter.delete(
 	"/:id",
 	authenticateToken,

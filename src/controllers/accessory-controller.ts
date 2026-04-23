@@ -90,6 +90,32 @@ class AccessoryController {
 		}
 	}
 
+	public async buy(req: Request, res: Response, next: NextFunction) {
+		try {
+			const accessoryId: string = req.body.accessoryId;
+			const userId: string = req.body.userId;
+			await this.accessoryService.buy(accessoryId, userId);
+			res.status(200).json({ message: "Аксесоарът е закупен успешно!" });
+		}
+		catch (err)
+		{
+			next(err);
+		}
+	}
+
+	public async getByUser(req: Request, res: Response, next: NextFunction) {
+		try {
+			const userId: string = req.params.userId!.toString();
+			const accessories: Array<string> | null = await this.accessoryService.getByUser(userId);
+			if (!accessories) throw new AppError("Потребителят няма закупени аксесоари или не е намерен!", 404);
+			res.json(accessories);
+		}
+		catch (err)
+		{
+			next(err);
+		}
+	}
+
 	public async update(req: Request, res: Response, next: NextFunction) {
 		const safeRename = (oldPath: string, newPath: string) => {
 			try {

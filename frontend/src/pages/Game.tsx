@@ -9,33 +9,46 @@ const Game: React.FC = () => {
   const [players, setPlayers] = React.useState<PlayerDTO[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [userVote, setUserVote] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    fetch(`${BASE_URL}/players`)
-      .then(res => res.json())
-      .then(data => {
-        setPlayers(data);
+    const fetchData = async () => {
+      try {
+        const [playersRes, voteRes] = await Promise.all([
+          fetch(`${BASE_URL}/players`),
+          user ? fetch(`${BASE_URL}/players/vote/me`, { credentials: "include" }) : Promise.resolve(new Response(JSON.stringify({ ok: false }), { status: 400 }))
+        ]);
+        
+        const playersData = await playersRes.json();
+        setPlayers(playersData);
+        if (voteRes.ok) {
+          const voteData = await voteRes.json();
+          setUserVote(voteData.playerId);
+        }
+      } catch (err) {
+        toast.error("Грешка при зареждане на данните");
+      } finally {
         setIsLoading(false);
-      })
-      .catch(err => {
-        toast.error("Грешка при зареждане на играчите");
-        setIsLoading(false);
-      });
-  }, []);
+      }
+    };
+    fetchData();
+  }, [user]);
 
-  const handleVote = async (playerId: string) => {
+  const handleVote = async (player: PlayerDTO) => {
     if (!user) return toast.error("Трябва да сте регистрирани, за да гласувате!");
     
     try {
       const response = await fetch(`${BASE_URL}/players/vote`, {
+        credentials: "include",
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ playerId, userId: user.id })
+        body: JSON.stringify({ playerId: player.id, userId: user.id })
       });
       
       const data = await response.json();
       if (response.ok) {
         toast.success(data.message);
+        setUserVote(player.id);
       } else {
         toast.error(data.message || "Грешка при гласуване.");
       }
@@ -54,7 +67,11 @@ const Game: React.FC = () => {
       <title>Игра: Играч на седмицата – FutBrain</title>
       <section className="hero section-header-no-border text-center flex-column">
         <h1 className="text-light-green">Играч на седмицата</h1>
-        <p className="max-w-700 mt-15 mb-0">Гласувай за играча, който според теб се е представил най-добре през изминалата седмица. Ако твоят избор съвпадне с масовото мнение на общността, ще получиш <strong>FutCoins</strong> като награда в понеделник сутрин!</p>
+        {userVote ? (
+            <div className="alert alert-success">Вече гласувахте за: <strong>{players.find(p => p.id === userVote)?.name}</strong></div>
+        ) : (
+            <p className="max-w-700 mt-15 mb-0">Гласувай за играча, който според теб се е представил най-добре през изминалата седмица. Ако твоят избор съвпадне с масовото мнение на общността, ще получиш <strong>FutCoins</strong> като награда в понеделник сутрин!</p>
+        )}
       </section>
 
       <div className="search-box mb-10 w-full">
@@ -85,9 +102,10 @@ const Game: React.FC = () => {
                 <p>{player.club}</p>
                 <button 
                   className="btn-register btn-full mt-15"
-                  onClick={() => handleVote(player.id)}
+                  disabled={!!userVote}
+                  onClick={() => handleVote(player)}
                 >
-                  Гласувай
+                  {userVote === player.id ? 'Гласувано' : 'Гласувай'}
                 </button>
               </div>
             ))

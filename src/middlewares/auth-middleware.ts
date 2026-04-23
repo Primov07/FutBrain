@@ -7,7 +7,6 @@ interface JwtPayload {
 	username: string;
 	isAdmin: boolean;
 	pictureURL: string;
-	futcoins: number;
 }
 
 export const authenticateToken = (

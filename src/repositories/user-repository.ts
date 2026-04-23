@@ -8,7 +8,11 @@ export class UserRepository {
 	}
 
 	public async getById(id: string): Promise<User | null> {
-		const user: User | null = await UserModel.findById(id).lean().exec();
+		const user = await UserModel.findOne({
+			_id: id,
+		})
+			.lean()
+			.exec();
 		return user;
 	}
 
@@ -19,7 +23,7 @@ export class UserRepository {
 		return user;
 	}
 
-	public async deleteByUsername(username: string) : Promise<User | null>{
+	public async deleteByUsername(username: string): Promise<User | null> {
 		const result: User | null = await UserModel.findOneAndDelete({
 			username: username,
 		})
@@ -28,20 +32,22 @@ export class UserRepository {
 		return result;
 	}
 
-	public async authenticate(username: string, password: string): Promise<User | null> {
-		const user: User | null = await UserModel.findOne({ username: username })
-			.exec();
-		if (!user)
-			return null;
+	public async authenticate(
+		username: string,
+		password: string,
+	): Promise<User | null> {
+		const user: User | null = await UserModel.findOne({
+			username: username,
+		}).exec();
+		if (!user) return null;
 
 		const verify: boolean = await user.comparePasswords(password);
-		if (!verify)
-			return null;
+		if (!verify) return null;
 
 		return user;
 	}
 
-	public async create(user: User) : Promise<User | null>{
+	public async create(user: User): Promise<User | null> {
 		const ifExists: User | null = await UserModel.exists({
 			username: user.username,
 		})
@@ -54,14 +60,14 @@ export class UserRepository {
 		return model;
 	}
 
-	public async deleteById(id: string) : Promise<User | null>{
+	public async deleteById(id: string): Promise<User | null> {
 		const result: User | null = await UserModel.findByIdAndDelete(id)
 			.lean()
 			.exec();
 		return result;
 	}
 
-	public async update(user: User) : Promise<void | null>{
+	public async update(user: User): Promise<void | null> {
 		const id: string = user._id;
 		let found = await UserModel.findById(id);
 
@@ -75,6 +81,9 @@ export class UserRepository {
 		found.comments = user.comments!;
 		found.posts = user.posts!;
 		found.replies = user.replies!;
+		found.futcoins = user.futcoins!;
+		found.accessories = user.accessories!;
+		found.preferredPlayer = user.preferredPlayer!;
 		found.save();
 	}
 }

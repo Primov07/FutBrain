@@ -1,12 +1,16 @@
-import { AccessoryRepository } from ".";
+import { Types } from "mongoose";
+import { AccessoryRepository, UserRepository } from ".";
 import { Accessory } from ".";
 import { AccessoryDTO, CreateAccessoryDTO, UpdateAccessoryDTO } from ".";
+import { AppError } from "../controllers";
 
 export class AccessoryService {
 	private accessoryRepository: AccessoryRepository;
+	private userRepository: UserRepository;
 
 	constructor() {
 		this.accessoryRepository = new AccessoryRepository();
+		this.userRepository = new UserRepository();
 	}
 
 	public async getAll(): Promise<Array<AccessoryDTO> | null> {
@@ -20,6 +24,27 @@ export class AccessoryService {
 		const accessory = await this.accessoryRepository.getById(id);
 		if (accessory) return this.toAccessoryDTO(accessory);
 		return null;
+	}
+
+	public async buy(accessoryId: string, userId: string): Promise<void> {
+		const accessory = await this.accessoryRepository.getById(accessoryId);
+		if (!accessory) throw new AppError("Аксесоарът не е намерен", 404);
+
+		const user = await this.userRepository.getById(userId);
+		if (!user) throw new AppError("Потребителят не е намерен", 404);
+
+		if (user.futcoins < accessory.price) throw new AppError("Недостатъчно средства!", 400);
+		if (user.accessories?.some((a) => a.toString() === accessoryId)) throw new AppError("Вече притежавате този аксесоар!", 400);
+
+		user.futcoins -= accessory.price;
+		user.accessories?.push(new Types.ObjectId(accessoryId));
+		await this.userRepository.update(user);
+	}
+
+	public async getByUser(userId: string): Promise<Array<string> | null> {
+		const user = await this.userRepository.getById(userId);
+		if (!user) throw new AppError("Потребителят не е намерен", 404);
+		return user.accessories?.map((id) => id.toString()) || null;
 	}
 
 	public async create(accessory: CreateAccessoryDTO): Promise<string> {
