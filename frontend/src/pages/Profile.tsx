@@ -115,17 +115,21 @@ const Profile: React.FC = () => {
 
         <div className="profile-content">
           <div className="profile-section">
-            <h3 className="section-title">Аксесоари</h3>
+            <h3 className="section-title">Колекция аксесоари</h3>
             <div className="accessories-grid">
               {profileUser.accessories && profileUser.accessories.length > 0 ? (
-                profileUser.accessories.map((acc: any, index: number) => (
-                  <div key={index} className="accessory-item">
-                    {/* Тук ще се показва аксесоара, ако бекендът го връща като обект */}
-                    <span>Аксесоар #{index + 1}</span>
+                profileUser.accessories.map((acc: any) => (
+                  <div key={acc.id} className="accessory-card">
+                    <img 
+                      src={acc.photo} 
+                      alt="Аксесоар" 
+                      className="accessory-photo"
+                      onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
+                    />
                   </div>
                 ))
               ) : (
-                <p className="text-light">Няма налични аксесоари.</p>
+                <p className="text-light">Все още няма закупени аксесоари.</p>
               )}
             </div>
           </div>

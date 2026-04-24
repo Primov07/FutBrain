@@ -13,5 +13,6 @@ postRouter.post(
 	postUpload.array("postImgs"),
 	postController.create.bind(postController),
 );
+postRouter.post("/like", authenticateToken, postController.like.bind(postController));
 postRouter.delete("/:id", postController.deleteById.bind(postController));
 postRouter.put("/", postController.update.bind(postController));

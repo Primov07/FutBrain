@@ -11,6 +11,7 @@ export class UserRepository {
 		const user = await UserModel.findOne({
 			_id: id,
 		})
+			.populate("accessories")
 			.lean()
 			.exec();
 		return user;
@@ -18,6 +19,7 @@ export class UserRepository {
 
 	public async getByUsername(username: string): Promise<User | null> {
 		const user: User | null = await UserModel.findOne({ username: username })
+			.populate("accessories")
 			.lean()
 			.exec();
 		return user;
@@ -84,6 +86,23 @@ export class UserRepository {
 		found.futcoins = user.futcoins!;
 		found.accessories = user.accessories!;
 		found.preferredPlayer = user.preferredPlayer!;
-		found.save();
+		found.likedPosts = user.likedPosts!;
+		found.likedComments = user.likedComments!;
+		found.likedReplies = user.likedReplies!;
+		await found.save();
+	}
+
+	public async addFutcoinsToUsers(
+		userIds: string[],
+		amount: number,
+	): Promise<void> {
+		UserModel.updateMany(
+			{ _id: { $in: userIds } },
+			{ $inc: { futcoins: amount } },
+		).exec();
+	}
+
+	public async resetPreferredPlayers(): Promise<void> {
+		UserModel.updateMany({}, { preferredPlayer: null }).exec();
 	}
 }

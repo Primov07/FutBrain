@@ -104,7 +104,7 @@ class PostController {
 
 	public async like(req: Request, res: Response, next: NextFunction) {
 		try {
-			this.likeService.handlePostLike(req.body.postId, req.body.userId);
+			await this.likeService.handlePostLike(req.body.postId, req.body.userId);
 			res
 				.status(201)
 				.json({ message: "Харесването на публикацията беше успешно!" });

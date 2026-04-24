@@ -33,18 +33,29 @@ export class AccessoryService {
 		const user = await this.userRepository.getById(userId);
 		if (!user) throw new AppError("Потребителят не е намерен", 404);
 
-		if (user.futcoins < accessory.price) throw new AppError("Недостатъчно средства!", 400);
-		if (user.accessories?.some((a) => a.toString() === accessoryId)) throw new AppError("Вече притежавате този аксесоар!", 400);
+		if (user.futcoins < accessory.price)
+			throw new AppError("Недостатъчно средства!", 400);
+
+		// Проверка дали потребителят вече притежава аксесоара (отчитаме, че е попълнен обект)
+		const ownsAccessory = user.accessories?.some(
+			(a: any) =>
+				(a._id?.toString() || a.id?.toString() || a.toString()) === accessoryId,
+		);
+
+		if (ownsAccessory)
+			throw new AppError("Вече притежавате този аксесоар!", 400);
 
 		user.futcoins -= accessory.price;
-		user.accessories?.push(new Types.ObjectId(accessoryId));
+		if (!user.accessories) user.accessories = [];
+		user.accessories.push(new Types.ObjectId(accessoryId) as any);
 		await this.userRepository.update(user);
 	}
 
 	public async getByUser(userId: string): Promise<Array<string> | null> {
 		const user = await this.userRepository.getById(userId);
 		if (!user) throw new AppError("Потребителят не е намерен", 404);
-		return user.accessories?.map((id) => id.toString()) || null;
+
+		return user.accessories?.map((a: any) => a.id?.toString()) || null;
 	}
 
 	public async create(accessory: CreateAccessoryDTO): Promise<string> {

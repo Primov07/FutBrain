@@ -29,8 +29,6 @@ const Store: React.FC = () => {
 				const userAccData =
 					user && userAccRes.ok ? await userAccRes.json() : [];
 
-				console.log(accData, userAccData);
-
 				setAccessories(accData);
 				setUserAccessories(userAccData);
 			} catch (err) {

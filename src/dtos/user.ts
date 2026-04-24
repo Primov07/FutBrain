@@ -13,7 +13,11 @@ export interface UserDTO {
 	likedComments: Types.ObjectId[];
 	replies: Types.ObjectId[];
 	likedReplies: Types.ObjectId[];
-	accessories: Types.ObjectId[];
+	accessories:
+	{
+		id: string;
+		photo: string;
+	}[];
 }
 
 export interface CreateUserDTO {

@@ -51,6 +51,11 @@ const AdminLayout: React.FC = () => {
                   <i className="fas fa-store"></i> Аксесоари
                 </NavLink>
               </li>
+              <li>
+                <NavLink to="/admin/game" className={({ isActive }) => isActive ? 'active' : ''}>
+                  <i className="fas fa-trophy"></i> Управление на играта
+                </NavLink>
+              </li>
             </ul>
           </nav>
           <div className="sidebar-footer">

@@ -14,6 +14,7 @@ import { playerUpload } from "./middlewares/multerConfig";
 import { errorHandler } from "./middlewares/error-handler";
 import { authenticateToken } from "./middlewares/auth-middleware";
 import cookieParser from "cookie-parser";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
@@ -95,6 +96,41 @@ app.get("/logout", (req: express.Request, res: express.Response) => {
 	});
 
 	res.status(200).json({ message: "Успешно излязохте от профила си!" });
+});
+
+app.post("/contact", async (req: express.Request, res: express.Response) => {
+	const { name, email, subject, message } = req.body;
+
+	if (!name || !email || !subject || !message) {
+		res.status(400).json({ message: "Моля, попълнете абсолютно всички полета!" });
+		return;
+	}
+
+	try {
+		const transporter = nodemailer.createTransport({
+			service: "gmail",
+			auth: {
+				user: process.env.EMAIL_USER,
+				pass: process.env.EMAIL_PASS,
+			},
+			tls: {
+				rejectUnauthorized: false,
+			},
+		});
+
+		const mailOptions = {
+			from: email,
+			to: process.env.EMAIL_USER,
+			subject: subject,
+			text: `Име: ${name}\n\n${message}`,
+		};
+
+		await transporter.sendMail(mailOptions);
+		res.status(200).json({ message: "Вашето съобщение беше изпратено успешно!" });
+	} catch (error) {
+		console.error("Email error:", error);
+		res.status(500).json({ message: "Грешка при изпращането на имейла." });
+	}
 });
 
 app.use(errorHandler);

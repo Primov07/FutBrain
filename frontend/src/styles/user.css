@@ -248,18 +248,34 @@ header {
 
 .accessories-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-	gap: 15px;
+	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+	gap: 20px;
 }
 
-.accessory-item {
-	background: var(--off-white);
-	padding: 15px;
-	border-radius: 10px;
-	text-align: center;
-	font-size: 0.85rem;
-	font-weight: 600;
-	color: var(--primary-blue);
+.accessory-card {
+	background: linear-gradient(145deg, #ffffff, #f0f0f0);
+	border-radius: 12px;
+	padding: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	aspect-ratio: 1 / 1;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+	transition: all 0.3s ease;
+	border: 1px solid #eee;
+}
+
+.accessory-card:hover {
+	transform: translateY(-5px) scale(1.05);
+	box-shadow: 0 8px 20px rgba(5, 32, 77, 0.15);
+	border-color: var(--primary-blue);
+}
+
+.accessory-photo {
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+	filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
 
 .posts-list {
@@ -840,6 +856,86 @@ footer {
 
 .section-header-no-border {
 	border: none !important;
+}
+
+/* Game Page Specific Styles */
+.game-hero {
+	margin-bottom: 40px;
+}
+
+.last-winner-section {
+	margin-bottom: 80px;
+}
+
+.last-winner-card {
+	background: linear-gradient(135deg, rgba(5, 32, 77, 0.9) 0%, rgba(144, 238, 144, 0.2) 100%);
+	padding: 30px;
+	border-radius: 15px;
+	border: 2px solid #ffd700;
+	display: flex;
+	align-items: center;
+	gap: 30px;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.winner-info-title {
+	font-size: 1.2rem;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+}
+
+.winner-name {
+	font-size: 2.5rem;
+	margin: 10px 0;
+	color: white;
+}
+
+.winner-club-container, .player-club-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.winner-club-container {
+	gap: 10px;
+}
+
+.winner-club-name {
+	font-size: 1.4rem;
+	margin: 0;
+	font-weight: 600;
+}
+
+.reward-badge {
+	background: #ffd700;
+	color: #05204d;
+	padding: 5px 15px;
+	border-radius: 20px;
+	font-weight: bold;
+	display: inline-block;
+}
+
+.game-search-box {
+	margin-bottom: 60px !important;
+}
+
+.player-club-container {
+	gap: 8px;
+	margin-bottom: 10px;
+}
+
+.player-club-name {
+	font-size: 0.9rem;
+	margin: 0;
+	font-weight: 600;
+}
+
+.btn-voted {
+	background-color: #ffd700 !important;
+	color: #05204d !important;
+	border-color: #ffd700 !important;
+	opacity: 1 !important;
 }
 
 .mb-0 {

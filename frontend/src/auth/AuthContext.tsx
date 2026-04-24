@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 				if (!res.ok) throw new Error();
 				return res.json();
 			})
-			.then((data) => setUser(data.user))
+			.then((data) => setUser(data))
 			.catch(() => setUser(null))
 			.finally(() => setLoading(false));
 	}, []);

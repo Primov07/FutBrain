@@ -17,6 +17,11 @@ playerRouter.get(
 playerRouter.get("/", playerController.getAll.bind(playerController));
 playerRouter.get("/:id", playerController.getById.bind(playerController));
 
+playerRouter.get(
+	"/winner/last",
+	playerController.getLastWinner.bind(playerController),
+);
+
 playerRouter.post(
 	"/",
 	authenticateToken,
@@ -28,6 +33,13 @@ playerRouter.post(
 	"/vote",
 	authenticateToken,
 	playerController.vote.bind(playerController),
+);
+
+playerRouter.post(
+	"/force-end",
+	authenticateToken,
+	restrictToAdmin,
+	playerController.forceEndGame.bind(playerController),
 );
 
 playerRouter.get(

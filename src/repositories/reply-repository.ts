@@ -57,6 +57,7 @@ export class ReplyRepository {
 		if (!found) return null;
 
 		found.content = reply.content;
+		found.likedBy = reply.likedBy!;
 		if (reply.photos) found.photos = reply.photos;
 
 		found.save();

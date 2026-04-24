@@ -58,6 +58,7 @@ export class PostRepository {
 		found.title = post.title;
 		found.content = post.content;
 		found.comments = post.comments;
+		found.likedBy = post.likedBy!;
 		
 		found.save();
 	}

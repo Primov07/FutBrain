@@ -1,4 +1,4 @@
-export { Accessory, Comment, Player, Post, Reply, User } from "../models";
+export { Accessory, Comment, Player, Post, Reply, User, Game } from "../models";
 
 export {
 	AccessoryRepository,
@@ -7,6 +7,7 @@ export {
 	PostRepository,
 	ReplyRepository,
 	UserRepository,
+	GameRepository,
 } from "../repositories";
 
 export { AccessoryService } from "./accessory-service";

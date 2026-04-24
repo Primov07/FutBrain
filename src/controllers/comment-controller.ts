@@ -77,7 +77,7 @@ class CommentController {
 
 	public async like(req: Request, res: Response, next: NextFunction) {
 		try {
-			this.likeService.handleCommentLike(req.body.commentId, req.body.userId);
+			await this.likeService.handleCommentLike(req.body.commentId, req.body.userId);
 			res.status(201).json({ message: "Харесването на коментара беше успешно!" });
 		} catch (err) {
 			next(err);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import type { PostDTO } from '../dtos/post';
 import type { CommentDTO } from '../dtos/comment';
 import type { ReplyDTO } from '../dtos/reply';
@@ -52,6 +52,32 @@ const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
     }
   };
 
+  const handleLikeComment = async (commentId: string) => {
+    if (!user) return toast.error("Трябва да сте влезли в профила си!");
+    try {
+      const response = await fetch(`${BASE_URL}/comments/like`, {
+        credentials: "include",
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ commentId, userId: user.id })
+      });
+      if (response.ok) {
+        setComments(prev => prev.map(c => {
+          if (c.id === commentId) {
+            const isLiked = c.likedBy.includes(user.id);
+            return {
+              ...c,
+              likedBy: isLiked ? c.likedBy.filter(id => id !== user.id) : [...c.likedBy, user.id]
+            };
+          }
+          return c;
+        }));
+      }
+    } catch (err) {
+      toast.error("Грешка при харесване");
+    }
+  };
+
   React.useEffect(() => {
     fetchComments(page);
   }, [page, postId]);
@@ -80,26 +106,39 @@ const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
       )}
       
       <div className="comments-list">
-        {comments.map((comment) => (
-          <div key={comment.id} className="comment-item">
-            <div className="comment-header">
-               <div className="comment-user-info">
-                 <img 
-                   src={comment.user.pictureURL?.startsWith('http') ? comment.user.pictureURL : `${BASE_URL}/user.png`} 
-                   alt={comment.user.username} 
-                   className="comment-avatar"
-                   onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
-                 />
-                 <Link to={`/profile/${comment.user.username}`} className="comment-username" style={{ marginRight: '15px' }}>{comment.user.username}</Link>
-               </div>
-               <span className="comment-date">
-                 {new Date(comment.publishDate).toLocaleDateString('bg-BG')}
-               </span>
+        {comments.map((comment) => {
+          const isLiked = user ? comment.likedBy.includes(user.id) : false;
+          return (
+            <div key={comment.id} className="comment-item">
+              <div className="comment-header">
+                 <div className="comment-user-info">
+                   <img 
+                     src={comment.user.pictureURL?.startsWith('http') ? comment.user.pictureURL : `${BASE_URL}/user.png`} 
+                     alt={comment.user.username} 
+                     className="comment-avatar"
+                     onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
+                   />
+                   <Link to={`/profile/${comment.user.username}`} className="comment-username" style={{ marginRight: '15px' }}>{comment.user.username}</Link>
+                 </div>
+                 <span className="comment-date">
+                   {new Date(comment.publishDate).toLocaleDateString('bg-BG')}
+                 </span>
+              </div>
+              <p className="comment-text">{comment.content}</p>
+              
+              <div className="comment-footer" style={{ display: 'flex', gap: '15px', marginBottom: '10px' }}>
+                <span 
+                  onClick={() => handleLikeComment(comment.id)} 
+                  style={{ cursor: 'pointer', color: isLiked ? 'var(--primary-blue)' : 'inherit', fontWeight: isLiked ? 'bold' : 'normal' }}
+                >
+                  <i className={`${isLiked ? 'fas' : 'far'} fa-thumbs-up`}></i> {comment.likedBy.length}
+                </span>
+              </div>
+              
+              <ReplySection commentId={comment.id} />
             </div>
-            <p className="comment-text">{comment.content}</p>
-            <ReplySection commentId={comment.id} />
-          </div>
-        ))}
+          );
+        })}
       </div>
       {hasMore && <button className="btn-action mt-15" onClick={() => setPage(p => p + 1)}>Още коментари</button>}
     </div>
@@ -149,6 +188,32 @@ const ReplySection: React.FC<{ commentId: string }> = ({ commentId }) => {
     }
   };
 
+  const handleLikeReply = async (replyId: string) => {
+    if (!user) return toast.error("Трябва да сте влезли в профила си!");
+    try {
+      const response = await fetch(`${BASE_URL}/replies/like`, {
+        credentials: "include",
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ replyId, userId: user.id })
+      });
+      if (response.ok) {
+        setReplies(prev => prev.map(r => {
+          if (r.id === replyId) {
+            const isLiked = r.likedBy.includes(user.id);
+            return {
+              ...r,
+              likedBy: isLiked ? r.likedBy.filter(id => id !== user.id) : [...r.likedBy, user.id]
+            };
+          }
+          return r;
+        }));
+      }
+    } catch (err) {
+      toast.error("Грешка при харесване");
+    }
+  };
+
   const toggle = () => {
     if (!show && replies.length === 0) fetchReplies(1);
     setShow(!show);
@@ -181,26 +246,37 @@ const ReplySection: React.FC<{ commentId: string }> = ({ commentId }) => {
       
       {show && (
         <div className="replies-list" style={{ marginLeft: '20px', borderLeft: '2px solid #eee', paddingLeft: '15px' }}>
-          {replies.map((reply) => (
-            <div key={reply.id} className="reply-item mb-15">
-               <div className="comment-header">
-                 <div className="comment-user-info">
-                   <img 
-                     src={reply.user.pictureURL?.startsWith('http') ? reply.user.pictureURL : `${BASE_URL}/user.png`} 
-                     alt={reply.user.username} 
-                     className="comment-avatar"
-                     style={{ width: '25px', height: '25px' }}
-                     onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
-                   />
-                   <Link to={`/profile/${reply.user.username}`} className="comment-username" style={{ fontSize: '0.85rem', marginRight: '10px' }}>{reply.user.username}</Link>
+          {replies.map((reply) => {
+            const isLiked = user ? reply.likedBy.includes(user.id) : false;
+            return (
+              <div key={reply.id} className="reply-item mb-15">
+                 <div className="comment-header">
+                   <div className="comment-user-info">
+                     <img 
+                       src={reply.user.pictureURL?.startsWith('http') ? reply.user.pictureURL : `${BASE_URL}/user.png`} 
+                       alt={reply.user.username} 
+                       className="comment-avatar"
+                       style={{ width: '25px', height: '25px' }}
+                       onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
+                     />
+                     <Link to={`/profile/${reply.user.username}`} className="comment-username" style={{ fontSize: '0.85rem', marginRight: '10px' }}>{reply.user.username}</Link>
+                   </div>
+                   <span className="comment-date" style={{ fontSize: '0.75rem' }}>
+                     {new Date(reply.publishDate).toLocaleDateString('bg-BG')}
+                   </span>
                  </div>
-                 <span className="comment-date" style={{ fontSize: '0.75rem' }}>
-                   {new Date(reply.publishDate).toLocaleDateString('bg-BG')}
-                 </span>
-               </div>
-               <p className="comment-text" style={{ fontSize: '0.85rem' }}>{reply.content}</p>
-            </div>
-          ))}
+                 <p className="comment-text" style={{ fontSize: '0.85rem' }}>{reply.content}</p>
+                 <div className="reply-footer" style={{ display: 'flex', gap: '15px' }}>
+                    <span 
+                      onClick={() => handleLikeReply(reply.id)} 
+                      style={{ cursor: 'pointer', fontSize: '0.75rem', color: isLiked ? 'var(--primary-blue)' : 'inherit', fontWeight: isLiked ? 'bold' : 'normal' }}
+                    >
+                      <i className={`${isLiked ? 'fas' : 'far'} fa-thumbs-up`}></i> {reply.likedBy.length}
+                    </span>
+                 </div>
+              </div>
+            );
+          })}
           {hasMore && <button className="btn-action" onClick={() => setPage(p => p + 1)}>Още отговори</button>}
         </div>
       )}
@@ -230,8 +306,34 @@ const Post: React.FC = () => {
       });
   }, [id, navigate]);
 
+  const handleLikePost = async () => {
+    if (!id || !user) return toast.error("Трябва да сте влезли в профила си!");
+    try {
+      const response = await fetch(`${BASE_URL}/posts/like`, {
+        credentials: "include",
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postId: id, userId: user.id })
+      });
+      if (response.ok) {
+        setPost(prev => {
+          if (!prev) return null;
+          const isLiked = prev.likedBy.includes(user.id);
+          return {
+            ...prev,
+            likedBy: isLiked ? prev.likedBy.filter(uid => uid !== user.id) : [...prev.likedBy, user.id]
+          };
+        });
+      }
+    } catch (err) {
+      toast.error("Грешка при харесване");
+    }
+  };
+
   if (isLoading) return <div className="admin-content">Зареждане...</div>;
   if (!post) return <div className="admin-content">Публикацията не е намерена.</div>;
+
+  const isLiked = user ? post.likedBy.includes(user.id) : false;
 
   return (
     <div className="profile-container">
@@ -255,7 +357,12 @@ const Post: React.FC = () => {
         </div>
         
         <div className="post-footer">
-          <span><i className="far fa-thumbs-up"></i> {post.likedBy.length} харесвания</span>
+          <span 
+            onClick={handleLikePost} 
+            style={{ cursor: 'pointer', color: isLiked ? 'var(--primary-blue)' : 'inherit', fontWeight: isLiked ? 'bold' : 'normal' }}
+          >
+            <i className={`${isLiked ? 'fas' : 'far'} fa-thumbs-up`}></i> {post.likedBy.length} харесвания
+          </span>
           <span><i className="far fa-comment"></i> {post.comments.length} коментара</span>
           {user?.id === post.user.id && (
             <Link to={`/post/update/${post.id}`} className="btn-edit-header" title="Редактирай" style={{ marginLeft: '15px', color: 'var(--primary-blue)' }}>

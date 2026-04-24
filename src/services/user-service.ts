@@ -76,7 +76,10 @@ export class UserService {
 			likedComments: user.likedComments?.map((comment) => comment._id)!,
 			replies: user.replies?.map((reply) => reply._id)!,
 			likedReplies: user.likedReplies?.map((reply) => reply._id)!,
-			accessories: user.accessories?.map(accessory => accessory._id)!,
+			accessories: user.accessories?.map((accessory: any) => ({
+				id: accessory._id?.toString() || accessory.id?.toString(),
+				photo: accessory.photo
+			})) || [],
 		};
 	}
 }

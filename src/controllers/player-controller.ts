@@ -166,6 +166,37 @@ class PlayerController {
 			next(err);
 		}
 	}
+
+	public async forceEndGame(req: Request, res: Response, next: NextFunction) {
+		try {
+			await this.voteService.forceEndGame();
+			res.json({
+				message:
+					"Играта беше прекратена предсрочно и наградите бяха раздадени успешно!",
+			});
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	public async getLastWinner(req: Request, res: Response, next: NextFunction) {
+		try {
+			const winner = await this.voteService.getLastWinner();
+			if (!winner) return res.json(null);
+
+			const winnerDTO: PlayerDTO = {
+				id: winner.id,
+				name: winner.name,
+				club: winner.club,
+				clubImg: winner.clubImg,
+				playerImg: winner.playerImg,
+				users: winner.users.map(String),
+			};
+			res.json(winnerDTO);
+		} catch (err) {
+			next(err);
+		}
+	}
 }
 
 export const playerController: PlayerController = new PlayerController(

@@ -60,6 +60,7 @@ export class CommentRepository {
 
 		found.content = comment.content;
 		found.replies = comment.replies;
+		found.likedBy = comment.likedBy!;
 		if (comment.photos) found.photos = comment.photos;
 
 		found.save();

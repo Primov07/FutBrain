@@ -535,6 +535,59 @@
     line-height: 1.4;
 }
 
+/* Admin Game Management Styles */
+.admin-danger-zone {
+    background-color: rgba(231, 76, 60, 0.05);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(231, 76, 60, 0.2);
+    text-align: center;
+    margin-top: 40px;
+}
+
+.admin-danger-zone h3 {
+    color: #e74c3c;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-force-end {
+    background-color: #e74c3c;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-top: 20px;
+    transition: all 0.3s;
+    min-width: 250px;
+    display: inline-block;
+}
+
+.btn-force-end:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+}
+
+.leader-row {
+    background-color: rgba(5, 32, 77, 0.03);
+}
+
+.stat-badge {
+    background-color: var(--primary-blue);
+    color: var(--white);
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
 /* Responsive Styles for Admin */
 @media (max-width: 1024px) {
     .admin-sidebar {

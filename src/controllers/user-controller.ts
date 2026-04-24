@@ -58,8 +58,7 @@ class UserController {
 	}
 
 	public async upload(req: Request, res: Response, next: NextFunction) {
-		if (req.file)
-		{
+		if (req.file) {
 			const id = (req as any).user?.id;
 			const oldPath: string = `uploads/users/${req.file?.filename!}`;
 			const newPath: string = `uploads/users/${id}.webp`;
@@ -125,34 +124,42 @@ class UserController {
 
 			if (!user) throw new AppError("Потребителят не е намерен!", 404);
 
-			const newToken = jwt.sign(
-				{
-					id: user.id,
-					username: user.username,
-					isAdmin: user.isAdmin,
-					pictureURL: user.pictureURL,
-					futcoins: user.futcoins,
-				},
-				process.env.SECRET_KEY!.toString(),
-			);
-			res
-				.cookie("token", newToken, {
-					httpOnly: true,
-					secure: true,
-					sameSite: "strict",
-				})
-				.status(200)
-				.json({
-					message: "Успешен вход!",
-					token: newToken,
-					user: {
+			const reqUser = (req as any).user;
+
+			if (
+				user.username != reqUser.username ||
+				user.futcoins != reqUser.futcoins
+			) {
+				const newToken = jwt.sign(
+					{
 						id: user.id,
 						username: user.username,
 						isAdmin: user.isAdmin,
 						pictureURL: user.pictureURL,
 						futcoins: user.futcoins,
 					},
-				});
+					process.env.SECRET_KEY!.toString(),
+				);
+				res
+					.cookie("token", newToken, {
+						httpOnly: true,
+						secure: true,
+						sameSite: "strict",
+					})
+					.status(200)
+					.json({
+						message: "Успешен вход!",
+						token: newToken,
+						user: {
+							id: user.id,
+							username: user.username,
+							isAdmin: user.isAdmin,
+							pictureURL: user.pictureURL,
+							futcoins: user.futcoins,
+						},
+					});
+			}
+			else res.json(reqUser);
 		} catch (error) {
 			next(error);
 		}

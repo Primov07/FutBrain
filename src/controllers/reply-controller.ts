@@ -87,7 +87,7 @@ class ReplyController {
 
 	public async like(req: Request, res: Response, next: NextFunction) {
 		try {
-			this.likeService.handleReplyLike(req.body.replyId, req.body.userId);
+			await this.likeService.handleReplyLike(req.body.replyId, req.body.userId);
 			res
 				.status(201)
 				.json({ message: "Харесването на отговора беше успешно!" });
