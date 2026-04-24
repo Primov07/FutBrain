@@ -50,7 +50,7 @@ const Contacts: React.FC = () => {
       <title>Контакти – FutBrain</title>
       <section className="section-header section-header-no-border text-center">
         <h1 className="text-light-green">Контакти</h1>
-        <p>Имате въпрос или предложение? Свържете се с нас.</p>
+        <p className="text-light-green">Имате въпрос или предложение? Свържете се с нас.</p>
       </section>
 
       <div className="contact-container">

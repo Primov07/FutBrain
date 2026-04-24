@@ -10,7 +10,7 @@ postRouter.get("/user/:username", postController.getPostsByUser.bind(postControl
 postRouter.post(
 	"/",
 	authenticateToken,
-	postUpload.array("postImgs"),
+	postUpload.single("postImg"),
 	postController.create.bind(postController),
 );
 postRouter.post("/like", authenticateToken, postController.like.bind(postController));

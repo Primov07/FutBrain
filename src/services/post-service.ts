@@ -33,7 +33,7 @@ export class PostService {
 		return null;
 	}
 
-	public async create(postDTO: CreatePostDTO): Promise<string | null> {
+	public async create(postDTO: CreatePostDTO): Promise<string> {
 		const post = new Post();
 		post.title = postDTO.title;
 		post.content = postDTO.content;
@@ -41,9 +41,9 @@ export class PostService {
 
 		const postId = await this.postRepository.create(post);
 		const user = await this.userRepository.getById(postDTO.user);
-		if (!user) return null;
+		if (!user) throw new AppError("Потребителят не е намерен", 404);
 		user.posts?.push(new Types.ObjectId(postId));
-		this.userRepository.update(user);
+		await this.userRepository.update(user);
 		return postId;
 	}
 
@@ -56,6 +56,7 @@ export class PostService {
 		update.id = post.id;
 		update.title = post.title;
 		update.content = post.content;
+		update.photo = post.photo;
 		return await this.postRepository.update(update);
 	}
 
@@ -95,7 +96,8 @@ export class PostService {
 				id: post.user?._id?.toString() || post.user?.id?.toString() || "",
 				username: post.user?.username || "Анонимен",
 				pictureURL: post.user?.pictureURL || ""
-			}
+			},
+			photo: post.photo
 		};
 	}
 }

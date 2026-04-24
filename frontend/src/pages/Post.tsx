@@ -353,6 +353,16 @@ const Post: React.FC = () => {
         
         <div className="post-body">
           <h3 className="text-primary-blue mb-10">{post.title}</h3>
+          {post.photo && (
+            <div className="post-photo-container mb-20" style={{ textAlign: 'center' }}>
+                <img 
+                    src={`${BASE_URL}/posts/${post.photo}`} 
+                    alt={post.title} 
+                    style={{ maxWidth: '100%', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
+            </div>
+          )}
           <p>{post.content}</p>
         </div>
         

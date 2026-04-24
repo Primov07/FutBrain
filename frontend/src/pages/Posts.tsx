@@ -195,18 +195,33 @@ const Posts: React.FC = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [showComments, setShowComments] = React.useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = React.useState('');
+  
+  const [players, setPlayers] = React.useState<any[]>([]);
+  const [clubs, setClubs] = React.useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = React.useState<'teams' | 'players' | null>(null);
+  const [activeFilter, setActiveFilter] = React.useState<string | null>(null);
+
   const navigate = useNavigate();
 
   const postsUrl = `${BASE_URL}/posts`;
+  const playersUrl = `${BASE_URL}/players`;
+  const clubsUrl = `${BASE_URL}/clubs`;
 
   React.useEffect(() => {
-    fetch(postsUrl)
-      .then((response) => response.json())
-      .then((data: PostDTO[]) => {
-        setPosts(data);
-        setIsLoading(false);
-      })
-      .catch((err) => toast.error((err as any).message));
+    setIsLoading(true);
+    Promise.all([
+      fetch(postsUrl).then(res => res.json()),
+      fetch(playersUrl).then(res => res.json()),
+      fetch(clubsUrl).then(res => res.json())
+    ]).then(([postsData, playersData, clubsData]) => {
+      setPosts(postsData);
+      setPlayers([...playersData].sort((a, b) => a.name.localeCompare(b.name)));
+      setClubs([...clubsData].sort((a, b) => a.name.localeCompare(b.name)));
+      setIsLoading(false);
+    }).catch((err) => {
+      toast.error((err as any).message);
+      setIsLoading(false);
+    });
   }, []);
 
   const handleLikePost = async (postId: string) => {
@@ -239,10 +254,20 @@ const Posts: React.FC = () => {
     setShowComments((prev) => ({ ...prev, [postId]: !prev[postId] }));
   };
 
-  const filteredPosts = posts.filter(post => 
-    post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    post.user.username.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredPosts = posts.filter(post => {
+    const matchesSearch = 
+      post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.user.username.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    if (!activeFilter) return matchesSearch;
+
+    const matchesFilter = 
+      post.title.toLowerCase().includes(activeFilter.toLowerCase()) ||
+      post.content.toLowerCase().includes(activeFilter.toLowerCase());
+    
+    return matchesSearch && matchesFilter;
+  });
 
   return (
     <>
@@ -258,19 +283,125 @@ const Posts: React.FC = () => {
         </div>
       </section>
 
-      <div className="search-box mb-10 w-full">
-        <input 
-          type="text" 
-          placeholder="Търси в публикациите..." 
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <button type="button"><i className="fas fa-search"></i></button>
+      <div className="filters-container mb-20">
+        <div className="search-box mb-10 w-full">
+          <input 
+            type="text" 
+            placeholder="Търси в публикациите..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button type="button"><i className="fas fa-search"></i></button>
+        </div>
+
+        <div className="category-selector mb-10" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button 
+            className={`btn-filter ${selectedCategory === 'teams' ? 'active' : ''}`}
+            onClick={() => {
+              setSelectedCategory(selectedCategory === 'teams' ? null : 'teams');
+              setActiveFilter(null);
+            }}
+            style={{ 
+              padding: '10px 20px', 
+              borderRadius: '25px', 
+              border: '2px solid var(--dark-green)',
+              background: selectedCategory === 'teams' ? 'var(--dark-green)' : 'transparent',
+              color: selectedCategory === 'teams' ? 'white' : 'var(--dark-green)',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.3s'
+            }}
+          >
+            <i className="fas fa-users"></i> Отбори
+          </button>
+          <button 
+            className={`btn-filter ${selectedCategory === 'players' ? 'active' : ''}`}
+            onClick={() => {
+              setSelectedCategory(selectedCategory === 'players' ? null : 'players');
+              setActiveFilter(null);
+            }}
+            style={{ 
+              padding: '10px 20px', 
+              borderRadius: '25px', 
+              border: '2px solid var(--dark-green)',
+              background: selectedCategory === 'players' ? 'var(--dark-green)' : 'transparent',
+              color: selectedCategory === 'players' ? 'white' : 'var(--dark-green)',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.3s'
+            }}
+          >
+            <i className="fas fa-running"></i> Играчи
+          </button>
+          {activeFilter && (
+            <button 
+              className="btn-clear-filter"
+              onClick={() => setActiveFilter(null)}
+              style={{ 
+                padding: '10px 20px', 
+                borderRadius: '25px', 
+                border: '2px solid #e74c3c',
+                background: 'transparent',
+                color: '#e74c3c',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+            >
+              Изчисти филтър: {activeFilter} <i className="fas fa-times"></i>
+            </button>
+          )}
+        </div>
+
+        {selectedCategory === 'teams' && (
+          <div className="items-list mb-15" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', background: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(144,238,144,0.3)' }}>
+            {clubs.length > 0 ? clubs.map((club, idx) => (
+              <span 
+                key={idx} 
+                onClick={() => setActiveFilter(club.name)}
+                style={{ 
+                  padding: '6px 14px', 
+                  borderRadius: '18px', 
+                  fontSize: '0.9rem',
+                  background: activeFilter === club.name ? 'var(--dark-green)' : 'rgba(255,255,255,0.05)',
+                  color: activeFilter === club.name ? 'white' : 'var(--light-green)',
+                  cursor: 'pointer',
+                  border: '1px solid var(--dark-green)',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {club.name}
+              </span>
+            )) : <p style={{ color: 'var(--light-green)' }}>Няма намерени отбори.</p>}
+          </div>
+        )}
+
+        {selectedCategory === 'players' && (
+          <div className="items-list mb-15" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', background: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(144,238,144,0.3)' }}>
+            {players.length > 0 ? players.map((player) => (
+              <span 
+                key={player.id} 
+                onClick={() => setActiveFilter(player.name)}
+                style={{ 
+                  padding: '6px 14px', 
+                  borderRadius: '18px', 
+                  fontSize: '0.9rem',
+                  background: activeFilter === player.name ? 'var(--dark-green)' : 'rgba(255,255,255,0.05)',
+                  color: activeFilter === player.name ? 'white' : 'var(--light-green)',
+                  cursor: 'pointer',
+                  border: '1px solid var(--dark-green)',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {player.name}
+              </span>
+            )) : <p style={{ color: 'var(--light-green)' }}>Няма намерени играчи.</p>}
+          </div>
+        )}
       </div>
 
       <div className="posts-grid">
         {isLoading ? (
-          <div className="admin-content">Зареждане...</div>
+          <div className="admin-content" style={{ color: 'white' }}>Зареждане...</div>
         ) : filteredPosts.length > 0 ? (
           filteredPosts.map((post) => {
             const isLiked = user ? post.likedBy.includes(user.id) : false;
@@ -287,9 +418,12 @@ const Posts: React.FC = () => {
                   <span className="post-date">{new Date(post.publishDate).toLocaleDateString('bg-BG')}</span>
                 </div>
                 <div className="post-body" onClick={() => navigate(`/post/${post.id}`)} style={{ cursor: 'pointer' }}>
-                  <h3 className="text-primary-blue mb-10">{post.title}</h3>
+                  <h3 className="text-primary-blue mb-10">
+                    {post.title} {post.photo && <span style={{ fontSize: '0.8rem', color: 'var(--text-light)', fontWeight: 'normal' }}>[снимка]</span>}
+                  </h3>
                   <p>{post.content.length > 200 ? post.content.substring(0, 200) + '...' : post.content}</p>
                 </div>
+
                 <div className="post-footer">
                   <span 
                     onClick={(e) => { e.stopPropagation(); handleLikePost(post.id); }} 
@@ -314,7 +448,7 @@ const Posts: React.FC = () => {
             );
           })
         ) : (
-          <p className="no-results-msg">Няма намерени публикации.</p>
+          <p className="no-results-msg" style={{ color: 'white' }}>Няма намерени публикации.</p>
         )}
       </div>
     </>

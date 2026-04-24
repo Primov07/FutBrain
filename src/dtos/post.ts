@@ -10,6 +10,7 @@ export interface PostDTO {
 		username: string;
 		pictureURL: string;
 	};
+	photo?: string;
 }
 
 export interface CreatePostDTO {
@@ -21,5 +22,6 @@ export interface CreatePostDTO {
 export interface UpdatePostDTO {
     id: string;
     title: string;
-    content: string;
+	content: string;
+	photo: string;
 }

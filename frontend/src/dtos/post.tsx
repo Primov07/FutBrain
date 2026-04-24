@@ -9,5 +9,6 @@ export interface PostDTO {
         id: string;
         username: string;
         pictureURL: string;
-    }
+	}
+	photo: string;
 }

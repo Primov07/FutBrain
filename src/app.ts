@@ -39,7 +39,6 @@ app.use(
 	}),
 );
 
-app.use(express.static(path.resolve(__dirname, "../../view")));
 app.use("/", express.static(path.join(__dirname, "../uploads/")));
 app.use("/clubs", express.static(path.join(__dirname, "../uploads/clubs")));
 app.use("/players", express.static(path.join(__dirname, "../uploads/players")));

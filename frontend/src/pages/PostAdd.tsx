@@ -8,6 +8,7 @@ const PostAdd: React.FC = () => {
 	const { user } = useAuth();
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
+    const [file, setFile] = useState<File | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
 
@@ -21,18 +22,19 @@ const PostAdd: React.FC = () => {
 
 		setIsLoading(true);
 
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("content", content);
+        formData.append("user", user?.id || "");
+        if (file) {
+            formData.append("postImg", file);
+        }
+
 		try {
 			const response = await fetch(`${BASE_URL}/posts`, {
 				credentials: "include",
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					title,
-					content,
-					user: user?.id, 
-				}),
+				body: formData
 			});
 
 			const data = await response.json();
@@ -68,6 +70,17 @@ const PostAdd: React.FC = () => {
 							onChange={(e) => setTitle(e.target.value)}
 							placeholder="Въведете заглавие на публикацията..."
 							required
+						/>
+					</div>
+
+                    <div className="form-group">
+						<label htmlFor="photo">Снимка към публикацията (не е задължителна)</label>
+						<input
+							type="file"
+							id="photo"
+                            accept="image/*"
+							onChange={(e) => setFile(e.target.files?.[0] || null)}
+                            style={{ padding: '10px 0' }}
 						/>
 					</div>
 
