@@ -1,7 +1,7 @@
 import express from "express";
 import { userController } from "../controllers";
 import { authenticateToken, restrictToAdmin } from "../middlewares";
-import { userUpload } from "../middlewares/multerConfig";
+import { userUpload } from "../middlewares/multer-config";
 
 export const userRouter: express.Router = express.Router();
 
