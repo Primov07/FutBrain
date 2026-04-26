@@ -15,14 +15,15 @@
 	padding: 0;
 }
 
-body {
+.user-body {
 	background-color: var(--primary-blue);
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 	color: var(--text-dark);
 	line-height: 1.6;
+	min-height: 100vh;
 }
 
-header {
+.user-body header {
 	height: 80px;
 	width: 100%;
 	background-color: var(--white);
@@ -285,7 +286,7 @@ header {
 }
 
 
-main {
+.user-body main {
 	max-width: 1200px;
 	margin: 0 auto;
 	padding: 20px;
@@ -577,7 +578,7 @@ main {
 }
 
 /* Footer */
-footer {
+.user-body footer {
 	background-color: #031430;
 	color: var(--white);
 	padding: 60px 0 20px;
@@ -1198,32 +1199,153 @@ footer {
 	color: var(--text-light);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-	.profile-grid {
-		grid-template-columns: 1fr;
-	}
+.mobile-menu-toggle {
+	display: none;
+	background: none;
+	border: none;
+	color: var(--primary-blue);
+	font-size: 1.5rem;
+	cursor: pointer;
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+	.nav-container {
+		padding: 0 15px;
+	}
+	.nav-links li {
+		margin: 0 10px;
+	}
+	.nav-links a {
+		font-size: 1rem;
+	}
+}
+
 @media (max-width: 768px) {
+	.mobile-menu-toggle {
+		display: block;
+		z-index: 1002;
+	}
+
+	.user-body nav {
+		position: fixed;
+		top: 0;
+		right: -100%;
+		width: 80%;
+		max-width: 300px;
+		height: 100vh;
+		background: var(--white);
+		box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+		transition: right 0.3s ease-in-out;
+		z-index: 1001;
+		padding-top: 100px;
+	}
+
+	.user-body nav.nav-active {
+		right: 0;
+	}
+
+	.nav-links {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.nav-links li {
+		margin: 15px 0;
+	}
+
+	.auth-buttons {
+		display: none; /* Hide default auth buttons on mobile header */
+	}
+
+	.auth-buttons.nav-active {
+		display: flex;
+		position: fixed;
+		bottom: 50px;
+		right: 0;
+		width: 80%;
+		max-width: 300px;
+		justify-content: center;
+		z-index: 1001;
+		transition: right 0.3s ease-in-out;
+		padding: 20px;
+	}
+	
+	.auth-buttons.nav-active:not(.nav-active) {
+		right: -100%;
+	}
+
 	.hero {
 		flex-direction: column;
 		text-align: center;
+		padding: 40px 20px;
 	}
 	.hero-image {
 		margin-top: 40px;
 		justify-content: center;
+		order: -1;
 	}
 	.hero-content h1 {
 		font-size: 2.5rem;
 	}
-	.nav-links,
-	.auth-buttons {
-		display: none;
+	.hero-content p {
+		font-size: 1.1rem;
 	}
+
+	.contact-container {
+		grid-template-columns: 1fr;
+		padding: 20px;
+	}
+
+	.profile-grid {
+		grid-template-columns: 1fr;
+	}
+
 	.footer-content {
 		grid-template-columns: 1fr;
 		gap: 40px;
+		text-align: center;
+	}
+
+	.footer-logo {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.last-winner-card {
+		padding: 20px;
+		gap: 15px;
+	}
+	.winner-name {
+		font-size: 1.8rem;
+	}
+
+	.stats-grid, .posts-grid, .players-grid, .store-grid {
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	}
+}
+
+@media (max-width: 480px) {
+	.hero-content h1 {
+		font-size: 2rem;
+	}
+	.posts-grid, .players-grid, .store-grid {
+		grid-template-columns: 1fr;
+	}
+	.section-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 10px;
+	}
+	.search-box {
+		width: 100%;
+	}
+	.search-box input {
+		padding: 10px 15px;
+	}
+	.profile-avatar {
+		width: 120px;
+		height: 120px;
 	}
 }

@@ -140,7 +140,6 @@ class PostController {
 		try {
 			const postDTO: UpdatePostDTO = req.body;
 
-			// AI Модерация
 			const isSafe = await this.moderationService.isContentSafe(
 				postDTO.title + " " + postDTO.content,
 			);
@@ -159,6 +158,16 @@ class PostController {
 				.json({ message: "Публикацията е актуализирана успешно!" });
 		} catch (error) {
 			next(error);
+		}
+	}
+
+	public async getCount(req: Request, res: Response, next: NextFunction) {
+		try {
+			const posts: Array<PostDTO> | null = await this.postService.getAll();
+			if (!posts) res.json({ count: 0 });
+			else res.json({ count: posts.length });
+		} catch (err) {
+			next(err);
 		}
 	}
 

@@ -1,6 +1,6 @@
 import { UserRepository } from ".";
 import { User } from ".";
-import { UserDTO, CreateUserDTO, UpdateUserDTO } from "../dtos/user";;
+import { UserDTO, CreateUserDTO, UpdateUserDTO, UpdateRoleDTO } from "../dtos/user";;
 
 export class UserService {
 	private userRepository: UserRepository;
@@ -50,6 +50,18 @@ export class UserService {
 		return result;
 	}
 
+	public async updateRole(roleUpdate: UpdateRoleDTO): Promise<void | null> {
+		const found = await this.userRepository.getById(roleUpdate.id);
+		if (!found) return null;
+
+		const userToUpdate: User = found;
+		userToUpdate._id = roleUpdate.id;
+		userToUpdate.isAdmin = roleUpdate.isAdmin;
+
+		const result: void | null = await this.userRepository.update(userToUpdate);
+		return result;
+	}
+
 	public async authenticate(username: string, password: string): Promise<UserDTO | null> {
 		const user: User | null = await this.userRepository.authenticate(username, password);
 		if (!user) return null;
@@ -80,6 +92,7 @@ export class UserService {
 				id: accessory._id?.toString() || accessory.id?.toString(),
 				photo: accessory.photo
 			})) || [],
+			isBanned: user.isBanned
 		};
 	}
 }

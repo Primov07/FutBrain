@@ -14,6 +14,7 @@ const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
   const [hasMore, setHasMore] = React.useState(true);
   const [showForm, setShowForm] = React.useState(false);
   const [content, setContent] = React.useState('');
+  const navigate = useNavigate();
 
   const fetchComments = async (pageNum: number) => {
     try {
@@ -126,16 +127,26 @@ const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
               </div>
               <p className="comment-text">{comment.content}</p>
               
-              <div className="comment-footer" style={{ display: 'flex', gap: '15px', marginBottom: '10px' }}>
+              <div className="comment-footer" style={{ display: 'flex', gap: '15px', marginBottom: '10px', alignItems: 'center' }}>
                 <span 
                   onClick={() => handleLikeComment(comment.id)} 
                   style={{ cursor: 'pointer', color: isLiked ? 'var(--primary-blue)' : 'inherit', fontWeight: isLiked ? 'bold' : 'normal' }}
                 >
                   <i className={`${isLiked ? 'fas' : 'far'} fa-thumbs-up`}></i> {comment.likedBy.length}
                 </span>
+                {user && user.username !== comment.user.username && (
+                  <button 
+                    className="btn-toggle-comments" 
+                    onClick={() => navigate(`/report/${comment.id}?type=Comment`)}
+                    title="Докладвай коментар"
+                    style={{ fontSize: '0.8rem' }}
+                  >
+                    <i className="fas fa-flag"></i> Докладвай
+                  </button>
+                )}
               </div>
               
-              <ReplySection commentId={comment.id} />
+              <ReplySection commentId={comment.id} initialCount={comment.replies?.length || 0} />
             </div>
           );
         })}
@@ -145,7 +156,7 @@ const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
   );
 };
 
-const ReplySection: React.FC<{ commentId: string }> = ({ commentId }) => {
+const ReplySection: React.FC<{ commentId: string; initialCount: number }> = ({ commentId, initialCount }) => {
   const { user } = useAuth();
   const [replies, setReplies] = React.useState<ReplyDTO[]>([]);
   const [page, setPage] = React.useState(1);
@@ -153,6 +164,7 @@ const ReplySection: React.FC<{ commentId: string }> = ({ commentId }) => {
   const [show, setShow] = React.useState(false);
   const [showForm, setShowForm] = React.useState(false);
   const [content, setContent] = React.useState('');
+  const navigate = useNavigate();
 
   const fetchReplies = async (pageNum: number) => {
     try {
@@ -223,7 +235,7 @@ const ReplySection: React.FC<{ commentId: string }> = ({ commentId }) => {
     <div className="replies-section">
       <div className="reply-actions">
         <button className="btn-toggle-comments" onClick={toggle}>
-          <i className="far fa-comment"></i> Отговори ({replies.length})
+          <i className="far fa-comment"></i> Отговори ({replies.length > 0 ? replies.length : initialCount})
         </button>
         {user && (
           <button className="btn-toggle-comments" onClick={() => setShowForm(!showForm)}>
@@ -266,13 +278,23 @@ const ReplySection: React.FC<{ commentId: string }> = ({ commentId }) => {
                    </span>
                  </div>
                  <p className="comment-text" style={{ fontSize: '0.85rem' }}>{reply.content}</p>
-                 <div className="reply-footer" style={{ display: 'flex', gap: '15px' }}>
+                 <div className="reply-footer" style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
                     <span 
                       onClick={() => handleLikeReply(reply.id)} 
                       style={{ cursor: 'pointer', fontSize: '0.75rem', color: isLiked ? 'var(--primary-blue)' : 'inherit', fontWeight: isLiked ? 'bold' : 'normal' }}
                     >
                       <i className={`${isLiked ? 'fas' : 'far'} fa-thumbs-up`}></i> {reply.likedBy.length}
                     </span>
+                    {user && user.id !== reply.user.id && (
+                      <button 
+                        className="btn-toggle-comments" 
+                        onClick={() => navigate(`/report/${reply.id}?type=Reply`)}
+                        title="Докладвай отговор"
+                        style={{ fontSize: '0.7rem' }}
+                      >
+                        <i className="fas fa-flag"></i> Докладвай
+                      </button>
+                    )}
                  </div>
               </div>
             );
@@ -366,7 +388,7 @@ const Post: React.FC = () => {
           <p>{post.content}</p>
         </div>
         
-        <div className="post-footer">
+        <div className="post-footer" style={{ gap: '15px', flexWrap: 'wrap' }}>
           <span 
             onClick={handleLikePost} 
             style={{ cursor: 'pointer', color: isLiked ? 'var(--primary-blue)' : 'inherit', fontWeight: isLiked ? 'bold' : 'normal' }}
@@ -374,8 +396,17 @@ const Post: React.FC = () => {
             <i className={`${isLiked ? 'fas' : 'far'} fa-thumbs-up`}></i> {post.likedBy.length} харесвания
           </span>
           <span><i className="far fa-comment"></i> {post.comments.length} коментара</span>
+          {user && user.id !== post.user.id && (
+            <button 
+              className="btn-toggle-comments" 
+              onClick={() => navigate(`/report/${post.id}?type=Post`)}
+              title="Докладвай публикация"
+            >
+              <i className="fas fa-flag"></i> Докладвай
+            </button>
+          )}
           {user?.id === post.user.id && (
-            <Link to={`/post/update/${post.id}`} className="btn-edit-header" title="Редактирай" style={{ marginLeft: '15px', color: 'var(--primary-blue)' }}>
+            <Link to={`/post/update/${post.id}`} className="btn-edit-header" title="Редактирай" style={{ color: 'var(--primary-blue)' }}>
               <i className="fas fa-edit"></i> Редактирай
             </Link>
           )}

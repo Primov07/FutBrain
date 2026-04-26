@@ -18,6 +18,7 @@ export { ReplyService } from "./reply-service";
 export { UserService } from "./user-service";
 export { VoteService } from "./vote-service";
 export { ModerationService } from "./moderation-service";
+export { ReportService } from "./report-service";
 
 export type {
 	PlayerDTO,

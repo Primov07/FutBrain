@@ -18,6 +18,7 @@ export interface UserDTO {
 		id: string;
 		photo: string;
 	}[];
+	isBanned: boolean;
 }
 
 export interface CreateUserDTO {
@@ -32,4 +33,9 @@ export interface UpdateUserDTO {
 	password: string;
 	email: string;
 	pictureURL: string;
+}
+
+export interface UpdateRoleDTO {
+	id: string;
+	isAdmin: boolean;
 }

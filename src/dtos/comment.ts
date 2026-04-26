@@ -11,6 +11,7 @@ export interface CommentDTO {
 	post: string;
 	publishDate: Date;
 	likedBy: string[];
+	replies: string[];
 }
 
 export interface CreateCommentDTO {

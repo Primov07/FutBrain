@@ -84,6 +84,7 @@ export class UserRepository {
 		found.posts = user.posts!;
 		found.replies = user.replies!;
 		found.futcoins = user.futcoins!;
+		found.strikes = user.strikes!;
 		found.accessories = user.accessories!;
 		found.preferredPlayer = user.preferredPlayer!;
 		found.likedPosts = user.likedPosts!;

@@ -9,6 +9,7 @@ const UserLayout: React.FC = () => {
   const navigate = useNavigate();
   const { user, setUser } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -18,6 +19,7 @@ const UserLayout: React.FC = () => {
       
       setUser(null);
       setIsMenuOpen(false);
+      setIsMobileNavOpen(false);
       navigate('/');
     } catch (error) {
       console.error("Грешка при излизане:", error);
@@ -28,46 +30,56 @@ const UserLayout: React.FC = () => {
     <div className="user-body">
       <header>
         <div className="nav-container">
-          <Link id="home" to="/">
+          <Link id="home" to="/" onClick={() => setIsMobileNavOpen(false)}>
             <img id="logo" src="/img/logo.png" alt="FutBrain лого" />
           </Link>
-          <nav>
+          
+          <button 
+            className="mobile-menu-toggle" 
+            onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+            aria-label="Toggle navigation"
+          >
+            <i className={`fas ${isMobileNavOpen ? 'fa-times' : 'fa-bars'}`}></i>
+          </button>
+
+          <nav className={isMobileNavOpen ? 'nav-active' : ''}>
             <ul className="nav-links">
               <li>
-                <Link to="/posts" className={location.pathname === '/posts' ? 'active' : ''}>
+                <Link to="/posts" className={location.pathname === '/posts' ? 'active' : ''} onClick={() => setIsMobileNavOpen(false)}>
                   Публикации
                 </Link>
               </li>
               <li>
-                <Link to="/game" className={location.pathname === '/game' ? 'active' : ''}>
+                <Link to="/game" className={location.pathname === '/game' ? 'active' : ''} onClick={() => setIsMobileNavOpen(false)}>
                   Игра
                 </Link>
               </li>
               <li>
-                <Link to="/store" className={location.pathname === '/store' ? 'active' : ''}>
+                <Link to="/store" className={location.pathname === '/store' ? 'active' : ''} onClick={() => setIsMobileNavOpen(false)}>
                   Магазин
                 </Link>
               </li>
               <li>
-                <Link to="/rankings" className={location.pathname === '/rankings' ? 'active' : ''}>
+                <Link to="/rankings" className={location.pathname === '/rankings' ? 'active' : ''} onClick={() => setIsMobileNavOpen(false)}>
                   Класации
                 </Link>
               </li>
               <li>
-                <Link to="/contacts" className={location.pathname === '/contacts' ? 'active' : ''}>
+                <Link to="/contacts" className={location.pathname === '/contacts' ? 'active' : ''} onClick={() => setIsMobileNavOpen(false)}>
                   Контакти
                 </Link>
               </li>
               {user?.isAdmin && (
                 <li>
-                  <Link to="/admin" className="admin-link-highlight">
+                  <Link to="/admin" className="admin-link-highlight" onClick={() => setIsMobileNavOpen(false)}>
                     Админ Панел
                   </Link>
                 </li>
               )}
             </ul>
           </nav>
-          <div className="auth-buttons">
+          
+          <div className={`auth-buttons ${isMobileNavOpen ? 'nav-active' : ''}`}>
             {user ? (
               <div className="user-menu-container">
                 <div 

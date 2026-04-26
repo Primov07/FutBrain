@@ -89,6 +89,7 @@ export class CommentService {
 			post: comment.post?.toString() || "",
 			publishDate: comment.publishDate,
 			likedBy: comment.likedBy?.map((id: any) => id.toString()) || [],
+			replies: comment.replies?.map((id: any) => id.toString()) || [],
 		};
 	}
 }

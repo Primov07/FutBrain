@@ -7,10 +7,10 @@ import { commentRouter } from "./routes/comment-routes";
 import { playerRouter } from "./routes/player-routes";
 import { postRouter } from "./routes/post-routes";
 import { replyRouter } from "./routes/reply-routes";
+import { reportRouter } from "./routes/report-routes";
 import path from "path";
 import fs from "fs";
 import cors from "cors";
-import { playerUpload } from "./middlewares/multerConfig";
 import { errorHandler } from "./middlewares/error-handler";
 import { authenticateToken } from "./middlewares/auth-middleware";
 import cookieParser from "cookie-parser";
@@ -28,7 +28,6 @@ export const BASE_URL: string = `http://localhost:${PORT}`;
 export const clubsUrl: string = `${BASE_URL}/clubs`;
 export const playersUrl: string = `${BASE_URL}/players`;
 export const accessoriesUrl: string = `${BASE_URL}/accessories`;
-export const usersUrl: string = `${BASE_URL}/users`;
 
 const viteUrl: string = process.env.VITE_FRONTEND_URL!;
 
@@ -55,6 +54,7 @@ app.use("/comments", commentRouter);
 app.use("/players", playerRouter);
 app.use("/posts", postRouter);
 app.use("/replies", replyRouter);
+app.use("/reports", reportRouter);
 
 app.get("/clubs", (req: express.Request, res: express.Response) => {
 	const clubsFolder = path.resolve(__dirname, "../../src/uploads/clubs");

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { UserService } from ".";
-import { UserDTO, CreateUserDTO, UpdateUserDTO } from "../dtos/user";
+import { UserDTO, CreateUserDTO, UpdateUserDTO, UpdateRoleDTO } from "../dtos/user";
 import { AppError } from "../middlewares/error-handler";
 import jwt from "jsonwebtoken";
 import fs from "fs";
@@ -83,6 +83,8 @@ class UserController {
 			if (!user)
 				throw new AppError("Грешно потребителско име или парола!", 401);
 
+			if (user.isBanned) throw new AppError("Вашият акаунт е блокиран!", 403);
+
 			const token = jwt.sign(
 				{
 					id: user.id,
@@ -128,7 +130,8 @@ class UserController {
 
 			if (
 				user.username != reqUser.username ||
-				user.futcoins != reqUser.futcoins
+				user.futcoins != reqUser.futcoins ||
+				user.isAdmin != reqUser.isAdmin
 			) {
 				const newToken = jwt.sign(
 					{
@@ -180,6 +183,18 @@ class UserController {
 			const user: UserDTO | null =
 				await this.userService.getByUsername(username);
 			res.json(user);
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	public async updateRole(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { id } : any = req.params;
+			const { isAdmin } = req.body;
+			const roleUpdate: UpdateRoleDTO = { id, isAdmin };
+			await this.userService.updateRole(roleUpdate);
+			res.json({ message: "Ролята на потребителя е актуализирана успешно!" });
 		} catch (error) {
 			next(error);
 		}

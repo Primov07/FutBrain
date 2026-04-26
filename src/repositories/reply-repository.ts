@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { ReplyModel, Reply } from ".";
+import { ReplyModel, Reply, CommentModel } from ".";
 import { DocumentType } from "@typegoose/typegoose";
 
 export class ReplyRepository {
@@ -48,6 +48,15 @@ export class ReplyRepository {
 			.exec();
 		if (!result) return false;
 		return true;
+	}
+
+	public async deleteByCommentId(commentId: string): Promise<void> {
+		await ReplyModel.deleteMany({ comment: new Types.ObjectId(commentId) }).exec();
+	}
+
+	public async deleteByPostId(postId: string): Promise<void> {
+		const commentIds = await CommentModel.find({ post: new Types.ObjectId(postId) }).distinct('_id');
+		await ReplyModel.deleteMany({ comment: { $in: commentIds } }).exec();
 	}
 
 	public async update(reply: Reply): Promise<void | null> {
