@@ -29,6 +29,7 @@ const AdminAccessories: React.FC = () => {
 		if (window.confirm("Сигурни ли сте, че искате да изтриете този аксесоар?")) {
 			try {
 				const response = await fetch(`${accessoriesUrl}/${id}`, {
+					credentials: "include",
 					method: "DELETE",
 				});
 				if (response.ok) {
