@@ -1,4 +1,4 @@
-# FutBrain ⚽🧠 (Български)
+# FutBrain ⚽🧠
 
 **Отключи своя футболен интелект.**
 
@@ -156,7 +156,7 @@ FutBrain/
 ---
 ---
 
-# FutBrain ⚽🧠 (English)
+# FutBrain ⚽🧠
 
 **Unlock your football intelligence.**
 
