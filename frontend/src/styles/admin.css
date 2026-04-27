@@ -324,6 +324,15 @@
     vertical-align: middle;
 }
 
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+    background-color: #f0f7ff !important;
+}
+
 .table-img {
     width: 60px; /* Increased size */
     height: 60px; /* Increased size */

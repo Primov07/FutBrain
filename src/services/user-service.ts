@@ -74,6 +74,24 @@ export class UserService {
 		return this.toUserDTO(user);
 	}
 
+	public async seedAdmin(): Promise<void> {
+		const adminUsername = process.env.ADMIN_USERNAME || "adminUser";
+		const adminEmail = process.env.ADMIN_EMAIL || "admin@futbrain.com";
+		const adminPassword = process.env.ADMIN_PASSWORD || "Admin123!";
+
+		const existingAdmin = await this.userRepository.getByUsername(adminUsername);
+		if (!existingAdmin) {
+			const adminUser = new User();
+			adminUser.username = adminUsername;
+			adminUser.email = adminEmail;
+			adminUser.passwordHash = adminPassword;
+			adminUser.isAdmin = true;
+
+			await this.userRepository.create(adminUser);
+			console.log(`Default admin user created: ${adminUsername}`);
+		}
+	}
+
 	public toUserDTO(user: User): UserDTO {
 		return {
 			id: user._id,

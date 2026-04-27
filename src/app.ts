@@ -15,11 +15,17 @@ import { errorHandler } from "./middlewares/error-handler";
 import { authenticateToken } from "./middlewares/auth-middleware";
 import cookieParser from "cookie-parser";
 import nodemailer from "nodemailer";
+import { UserService } from "./services";
 
 dotenv.config();
 
 const connectionString: string = process.env.MONGO_URI!;
-connect(connectionString);
+connect(connectionString).then(() => {
+	console.log("Connected to MongoDB");
+	new UserService().seedAdmin();
+}).catch(err => {
+	console.error("MongoDB connection error:", err);
+});
 
 export const app: express.Application = express();
 

@@ -17,6 +17,7 @@ const AdminReports: React.FC = () => {
     const [isLoading, setIsLoading] = React.useState(true);
 
     const fetchReports = async () => {
+        setIsLoading(true);
         try {
             const response = await fetch(`${BASE_URL}/reports`, {
                 credentials: 'include',

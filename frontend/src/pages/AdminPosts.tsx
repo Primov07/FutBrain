@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '.';
 import type { PostDTO } from '../dtos/post';
@@ -7,6 +8,7 @@ const AdminPosts: React.FC = () => {
   const [posts, setPosts] = React.useState<PostDTO[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState("");
+  const navigate = useNavigate();
 
   const fetchPosts = () => {
     setIsLoading(true);
@@ -84,7 +86,11 @@ const AdminPosts: React.FC = () => {
           <tbody>
             {filteredPosts.length > 0 ? (
               filteredPosts.map(p => (
-                <tr key={p.id}>
+                <tr 
+                  key={p.id} 
+                  className="clickable-row" 
+                  onClick={() => navigate(`/post/${p.id}`)}
+                >
                   <td>
                     <div className="admin-profile" style={{justifyContent: 'flex-start'}}>
                       <img 
@@ -102,7 +108,14 @@ const AdminPosts: React.FC = () => {
                   <td>{new Date(p.publishDate).toLocaleDateString("bg-BG")}</td>
                   <td>{p.likedBy.length}</td>
                   <td className="actions">
-                    <button className="btn-delete" title="Изтрий" onClick={() => deletePost(p.id)}>
+                    <button 
+                      className="btn-delete" 
+                      title="Изтрий" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deletePost(p.id);
+                      }}
+                    >
                       <i className="fas fa-trash"></i>
                     </button>
                   </td>
