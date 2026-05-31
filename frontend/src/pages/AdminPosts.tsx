@@ -48,7 +48,8 @@ const AdminPosts: React.FC = () => {
 
   const filteredPosts = posts.filter(p => 
     p.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.user.username.toLowerCase().includes(searchQuery.toLowerCase())
+    p.user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (isLoading) return <div className="admin-content">Зареждане...</div>;
@@ -94,7 +95,7 @@ const AdminPosts: React.FC = () => {
                   <td>
                     <div className="admin-profile" style={{justifyContent: 'flex-start'}}>
                       <img 
-                        src={p.user.pictureURL.startsWith('http') ? p.user.pictureURL : `${BASE_URL}/uploads/user.png`} 
+                        src={`${BASE_URL}/${p.user.pictureURL}` || '/img/logo.png'} 
                         className="admin-avatar" 
                         style={{width: '30px', height: '30px'}}
                         onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}

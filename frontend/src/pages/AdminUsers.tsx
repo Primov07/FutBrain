@@ -98,9 +98,10 @@ const AdminUsers: React.FC = () => {
                 <tr key={user.id}>
                   <td>
                     <img 
-                      src={user.pictureURL || '/img/logo.png'} 
+                      src={`${BASE_URL}/${user.pictureURL}` || '/img/logo.png'} 
                       alt="User" 
-                      className="table-img user-avatar-circle" 
+                      className="table-img user-avatar-circle"
+                      onError={(e) => (e.currentTarget.src = '/img/logo.png')}
                     />
                   </td>
                   <td>{user.username}</td>

@@ -429,7 +429,7 @@ const Posts: React.FC = () => {
               <article key={post.id} className="post-card">
                 <div className="post-header" onClick={() => navigate(`/post/${post.id}`)} style={{ cursor: 'pointer' }}>
                   <img 
-                    src={post.user.pictureURL?.startsWith('http') ? post.user.pictureURL : `${BASE_URL}/user.png`} 
+                    src={`${BASE_URL}/${post.user.pictureURL}` || '/img/logo.png'} 
                     alt={post.user.username} 
                     className="user-avatar"
                     onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}

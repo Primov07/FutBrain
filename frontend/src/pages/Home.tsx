@@ -62,9 +62,10 @@ const Home: React.FC = () => {
               <article className="post-card">
                 <div className="post-header">
                   <img 
-                    src={post.user?.pictureURL || '/img/logo.png'} 
+                    src={`${BASE_URL}/${post.user?.pictureURL}` || '/img/logo.png'} 
                     alt="Потребител" 
-                    className="user-avatar" 
+                    className="user-avatar"
+                    onError={(e) => { (e.currentTarget.src = '/img/logo.png'); }}
                   />
                   <span className="user-name">{post.user?.username || 'Unknown'}</span>
                   <span className="post-date">{new Date(post.publishDate).toLocaleDateString('bg-BG', { day: '2-digit', month: '2-digit', year: 'numeric' })}</span>
@@ -97,7 +98,7 @@ const Home: React.FC = () => {
           {players.map(player => (
             <div key={player.id} className="player-card">
               <div className="player-img-container">
-                <img src={player.playerImg} alt={player.name} />
+                <img src={`${BASE_URL}/${player.playerImg}` || '/img/logo.png'} alt={player.name} />
               </div>
               <h4>{player.name}</h4>
               <p>{player.club}</p>

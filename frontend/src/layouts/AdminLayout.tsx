@@ -79,7 +79,7 @@ const AdminLayout: React.FC = () => {
             </div>
             <div className="admin-profile">
               <span className="desktop-only">Добре дошли, <strong>{ user?.username}</strong></span>
-              <img src={user?.pictureURL?.startsWith('http') ? user.pictureURL : `${BASE_URL}/user.png`} alt="Админ" className="admin-avatar" />
+              <img src={`${BASE_URL}/${user!.pictureURL}` || '/img/logo.png'} alt="Админ" className="admin-avatar" />
             </div>
           </header>
 

@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from ".";
 
-const playersUrl = `${BASE_URL}/players`;
-
 import type { PlayerDTO } from ".";
 
 const AdminPlayers: React.FC = () => {
@@ -14,7 +12,7 @@ const AdminPlayers: React.FC = () => {
 
 	const fetchPlayers = React.useCallback(() => {
 		setIsLoading(true);
-		fetch(playersUrl)
+		fetch(`${BASE_URL}/players`)
 			.then((response) => response.json())
 			.then((data: PlayerDTO[]) => {
 				setPlayers(data);
@@ -34,7 +32,7 @@ const AdminPlayers: React.FC = () => {
 		if (window.confirm("Сигурни ли сте, че искате да изтриете този играч?")) {
 			try {
 				setIsLoading(true);
-				const response = await fetch(`${playersUrl}/${id}`, {
+				const response = await fetch(`${BASE_URL}/players/${id}`, {
 					method: "DELETE",
 					credentials: "include",
 				});
@@ -51,9 +49,10 @@ const AdminPlayers: React.FC = () => {
 		}
 	}
 
-	const filteredPlayers = players.filter(p => 
-		p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-		p.club.toLowerCase().includes(searchQuery.toLowerCase())
+	const filteredPlayers = players.filter(
+		(p) =>
+			p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			p.club.toLowerCase().includes(searchQuery.toLowerCase()),
 	);
 
 	if (isLoading) return <div className="admin-content">Зареждане...</div>;
@@ -65,15 +64,15 @@ const AdminPlayers: React.FC = () => {
 				<div className="header-actions">
 					<div className="header-search">
 						<i className="fas fa-search"></i>
-						<input 
-							type="text" 
-							placeholder="Търси играч или клуб..." 
+						<input
+							type="text"
+							placeholder="Търси играч или клуб..."
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 						/>
 					</div>
-					<button 
-						className="btn-refresh" 
+					<button
+						className="btn-refresh"
 						onClick={fetchPlayers}
 						title="Опресни данните"
 					>
@@ -100,24 +99,30 @@ const AdminPlayers: React.FC = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{filteredPlayers.length > 0 ? (
+						{filteredPlayers.length > 0 ?
 							filteredPlayers.map((p) => {
 								return (
 									<tr key={p.id}>
 										<td>
 											<img
-												src={p.playerImg}
+												src={`${BASE_URL}/${p.playerImg || "img/logo.png"}`}
 												alt={p.name}
 												className="table-img"
+												onError={(e) => {
+													(e.target as HTMLImageElement).src = "img/logo.png";
+												}}
 											/>
 										</td>
 										<td>{p.name}</td>
 										<td>{p.club}</td>
 										<td>
 											<img
-												src={p.clubImg}
+												src={`${BASE_URL}/${p.clubImg}` || "img/logo.png"}
 												alt={p.club}
 												className="club-logo-sm"
+												onError={(e) => {
+													(e.target as HTMLImageElement).src = "img/logo.png";
+												}}
 											/>
 										</td>
 										<td>{p.users.length}</td>
@@ -140,11 +145,15 @@ const AdminPlayers: React.FC = () => {
 									</tr>
 								);
 							})
-						) : (
-							<tr>
-								<td colSpan={6} style={{ textAlign: "center" }}>Няма намерени играчи.</td>
+						:	<tr>
+								<td
+									colSpan={6}
+									style={{ textAlign: "center" }}
+								>
+									Няма намерени играчи.
+								</td>
 							</tr>
-						)}
+						}
 					</tbody>
 				</table>
 			</div>

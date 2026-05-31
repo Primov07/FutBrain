@@ -101,7 +101,7 @@ const AdminAccessories: React.FC = () => {
 							filteredAccessories.map((a) => (
 								<tr key={a.id}>
 									<td>
-										<img src={a.photo.startsWith('http') ? a.photo : `${BASE_URL}${a.photo.replace('..', '')}`} alt={a.name} className="table-img" 
+										<img src={`${BASE_URL}/${a.photo}` || '/img/logo.png'} alt={a.name} className="table-img" 
 											onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
 										/>
 									</td>

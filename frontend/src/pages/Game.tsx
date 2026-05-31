@@ -95,7 +95,7 @@ const Game: React.FC = () => {
                         fontSize: '2rem' 
                     }}></i>
                     <img 
-                        src={lastWinner.playerImg} 
+                        src={`${BASE_URL}/${lastWinner.playerImg}` || '/img/logo.png'} 
                         alt={lastWinner.name} 
                         style={{ width: '150px', height: '150px', borderRadius: '50%', objectFit: 'cover', border: '4px solid #ffd700' }}
                         onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
@@ -107,7 +107,7 @@ const Game: React.FC = () => {
                     
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                         <img 
-                            src={lastWinner.clubImg} 
+                            src={`${BASE_URL}/${lastWinner.clubImg}` || '/img/logo.png'} 
                             alt={lastWinner.club} 
                             style={{ width: '35px', height: '35px', objectFit: 'contain' }} 
                             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -142,7 +142,7 @@ const Game: React.FC = () => {
               <div key={player.id} className="player-card">
                 <div className="player-img-container">
                   <img 
-                    src={player.playerImg} 
+                    src={`${BASE_URL}/${player.playerImg}` || '/img/logo.png'} 
                     alt={player.name} 
                     onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
                   />

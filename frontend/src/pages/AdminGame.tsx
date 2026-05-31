@@ -108,7 +108,7 @@ const AdminGame: React.FC = () => {
 											{index === 0 && p.users.length > 0 ? <i className="fas fa-crown" style={{ color: '#ffd700' }}></i> : index + 1}
 										</td>
 										<td>
-											<img src={p.playerImg} alt={p.name} className="table-img" />
+											<img src={`${BASE_URL}/${p.playerImg}` || '/img/logo.png'} alt={p.name} className="table-img" />
 										</td>
 										<td style={{ fontWeight: index === 0 ? 'bold' : 'normal' }}>{p.name}</td>
 										<td>{p.club}</td>

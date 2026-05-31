@@ -114,7 +114,7 @@ const CommentSection: React.FC<{ postId: string }> = ({ postId }) => {
               <div className="comment-header">
                  <div className="comment-user-info">
                    <img 
-                     src={comment.user.pictureURL?.startsWith('http') ? comment.user.pictureURL : `${BASE_URL}/user.png`} 
+                     src={`${BASE_URL}/${comment.user.pictureURL}` || '/img/logo.png'} 
                      alt={comment.user.username} 
                      className="comment-avatar"
                      onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}
@@ -265,7 +265,7 @@ const ReplySection: React.FC<{ commentId: string; initialCount: number }> = ({ c
                  <div className="comment-header">
                    <div className="comment-user-info">
                      <img 
-                       src={reply.user.pictureURL?.startsWith('http') ? reply.user.pictureURL : `${BASE_URL}/user.png`} 
+                       src={`${BASE_URL}/${reply.user.pictureURL}` || '/img/logo.png'} 
                        alt={reply.user.username} 
                        className="comment-avatar"
                        style={{ width: '25px', height: '25px' }}
@@ -362,7 +362,7 @@ const Post: React.FC = () => {
       <article className="post-card" style={{ maxWidth: '800px', margin: '0 auto' }}>
         <div className="post-header">
           <img 
-            src={post.user.pictureURL?.startsWith('http') ? post.user.pictureURL : `${BASE_URL}/user.png`} 
+            src={`${BASE_URL}/${post.user.pictureURL}` || '/img/logo.png'} 
             alt={post.user.username} 
             className="user-avatar"
             onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}

@@ -87,7 +87,7 @@ const UserLayout: React.FC = () => {
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   <img 
-                    src={user.pictureURL.startsWith('http') ? user.pictureURL : `${BASE_URL}/user.png`} 
+                    src={`${BASE_URL}/${user.pictureURL}` || '/img/logo.png'} 
                     alt={user.username} 
                     className="user-avatar-header" 
                     onError={(e) => {
