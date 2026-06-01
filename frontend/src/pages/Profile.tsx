@@ -63,7 +63,7 @@ const Profile: React.FC = () => {
       <div className="profile-grid">
         <div className="profile-card">
           <img 
-            src={profileUser.pictureURL?.startsWith('http') ? profileUser.pictureURL : `${BASE_URL}/user.png`} 
+            src={`${BASE_URL}/${profileUser.pictureURL || `${BASE_URL}/user.png`}`} 
             alt={profileUser.username} 
             className="profile-avatar"
             onError={(e) => {
@@ -121,7 +121,7 @@ const Profile: React.FC = () => {
                 profileUser.accessories.map((acc: any) => (
                   <div key={acc.id} className="accessory-card">
                     <img 
-                      src={acc.photo} 
+                      src={`${BASE_URL}/${acc.photo || `${BASE_URL}/accessory.png`}`} 
                       alt="Аксесоар" 
                       className="accessory-photo"
                       onError={(e) => { (e.target as HTMLImageElement).src = '/img/logo.png'; }}

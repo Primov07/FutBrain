@@ -1,5 +1,4 @@
 import { getModelForClass, prop, pre } from "@typegoose/typegoose";
-import { accessoriesUrl } from "../app";
 
 enum Type {
 	Ball = 1,
@@ -9,7 +8,7 @@ enum Type {
 
 @pre<Accessory>("save", async function () {
 	this.id = this._id.toString();
-	this.photo = `${accessoriesUrl}/${this.id}.webp`
+	this.photo = `accessories/${this.id}.webp`
 })
 	
 

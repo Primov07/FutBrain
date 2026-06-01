@@ -30,10 +30,8 @@ connect(connectionString).then(() => {
 export const app: express.Application = express();
 
 const PORT: number = parseInt(process.env.PORT!);
-export const BASE_URL: string = `http://localhost:${PORT}`;
-export const clubsUrl: string = `${BASE_URL}/clubs`;
-export const playersUrl: string = `${BASE_URL}/players`;
-export const accessoriesUrl: string = `${BASE_URL}/accessories`;
+const HOST: string = process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost";
+export const BASE_URL: string = `http://${HOST}:${PORT}`;
 
 const viteUrl: string = process.env.VITE_FRONTEND_URL!;
 
@@ -80,7 +78,7 @@ app.get("/clubs", (req: express.Request, res: express.Response) => {
 			)
 			.map((file) => ({
 				name: path.parse(file).name,
-				url: `${clubsUrl}/${file}`,
+				url: `${BASE_URL}/clubs/${file}`,
 			}));
 		res.json(clubImages);
 	});
@@ -127,7 +125,7 @@ app.post("/contact", async (req: express.Request, res: express.Response) => {
 			from: email,
 			to: process.env.EMAIL_USER,
 			subject: subject,
-			text: `Име: ${name}\n\n${message}`,
+			text: `Име: ${name}\nEmail: ${email}\n${message}`,
 		};
 
 		await transporter.sendMail(mailOptions);

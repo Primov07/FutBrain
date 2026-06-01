@@ -73,6 +73,16 @@ export class UserService {
 		if (!user) return null;
 		return this.toUserDTO(user);
 	}
+	public async updatePicture(id: string, pictureURL: string): Promise<void | null> {
+		const found = await this.userRepository.getById(id);
+		if (!found) return null;
+
+		const userToUpdate: User = found;
+		userToUpdate.pictureURL = pictureURL;
+
+		const result: void | null = await this.userRepository.update(userToUpdate);
+		return result;
+	}
 
 	public async seedAdmin(): Promise<void> {
 		const adminUsername = process.env.ADMIN_USERNAME || "adminUser";
